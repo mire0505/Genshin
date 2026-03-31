@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>원신 캐릭터 가이드</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f4f0;
+  --surface: #ffffff;
+  --surface2: #f0eeea;
+  --border: #e2dfd8;
+  --border-strong: #c8c4bc;
+  --text: #1a1916;
+  --text-sub: #6b6860;
+  --text-muted: #a09d98;
+  --accent: #b8860b;
+  --accent-bg: #fdf6e3;
+  --accent-border: #e8d5a0;
+  --blue: #3a6ea8;
+  --blue-bg: #eef3fa;
+  --green: #3a7a4a;
+  --green-bg: #eef6f0;
+  --red: #a03030;
+  --radius: 10px;
+  --radius-sm: 6px;
+  --shadow: 0 1px 4px rgba(0,0,0,0.06), 0 2px 12px rgba(0,0,0,0.04);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Noto Sans KR',sans-serif;
+  font-size:14px;
+  line-height:1.6;
+  min-height:100vh;
+}
+
+/* ── API Key modal ── */
+.api-overlay {
+  position:fixed; inset:0;
+  background:rgba(0,0,0,0.5);
+  display:flex; align-items:center; justify-content:center;
+  z-index:1000;
+}
+.api-modal {
+  background:#fff;
+  border-radius:12px;
+  padding:32px;
+  width:420px;
+  max-width:90vw;
+  box-shadow:0 8px 40px rgba(0,0,0,0.18);
+}
+.api-modal h2 {
+  font-size:18px; font-weight:700;
+  color:var(--accent); margin-bottom:8px;
+}
+.api-modal p {
+  font-size:13px; color:var(--text-sub);
+  line-height:1.7; margin-bottom:20px;
+}
+.api-modal p a { color:var(--blue); }
+.api-modal input {
+  width:100%;
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  padding:10px 12px;
+  font-family:inherit; font-size:13px;
+  color:var(--text); outline:none;
+  margin-bottom:12px;
+  transition:border-color .15s;
+}
+.api-modal input:focus { border-color:var(--accent-border); }
+.api-modal-btns { display:flex; gap:8px; }
+.btn-primary {
+  flex:1; background:var(--accent); border:none;
+  border-radius:var(--radius-sm); color:#fff;
+  font-family:inherit; font-size:13px; font-weight:600;
+  padding:9px; cursor:pointer; transition:opacity .15s;
+}
+.btn-primary:hover { opacity:.85; }
+.btn-ghost {
+  background:transparent; border:1px solid var(--border);
+  border-radius:var(--radius-sm); color:var(--text-sub);
+  font-family:inherit; font-size:13px;
+  padding:9px 16px; cursor:pointer;
+}
+.api-err { color:var(--red); font-size:12px; margin-top:6px; display:none; }
+
+/* ── Layout ── */
+.app-wrap {
+  display:flex; height:100vh; overflow:hidden;
+}
+
+/* ── Sidebar ── */
+.sidebar {
+  width:220px; min-width:220px;
+  background:#fff;
+  border-right:1px solid var(--border);
+  display:flex; flex-direction:column; overflow:hidden;
+}
+.sidebar-header {
+  padding:16px 14px 12px;
+  border-bottom:1px solid var(--border);
+}
+.logo {
+  font-size:15px; font-weight:700; color:var(--accent);
+  display:flex; align-items:center; gap:7px;
+}
+.logo-sub { font-size:11px; color:var(--text-muted); margin-top:2px; }
+.api-key-status {
+  display:flex; align-items:center; gap:5px;
+  font-size:11px; margin-top:8px; cursor:pointer;
+}
+.key-dot {
+  width:7px; height:7px; border-radius:50%;
+  background:#ccc; flex-shrink:0;
+}
+.key-dot.on { background:#3a7a4a; }
+.key-label { color:var(--text-muted); }
+
+.sidebar-filter {
+  padding:9px 10px;
+  border-bottom:1px solid var(--border);
+}
+.sidebar-filter input {
+  width:100%;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  padding:6px 10px;
+  font-family:inherit; font-size:12.5px;
+  color:var(--text); outline:none;
+}
+.sidebar-filter input::placeholder { color:var(--text-muted); }
+
+.char-list {
+  flex:1; overflow-y:auto; padding:6px 0 12px;
+}
+.char-list::-webkit-scrollbar { width:4px; }
+.char-list::-webkit-scrollbar-thumb { background:var(--border-strong); border-radius:4px; }
+
+.group-label {
+  padding:8px 13px 3px;
+  font-size:10.5px; font-weight:600;
+  color:var(--text-muted);
+  letter-spacing:.08em; text-transform:uppercase;
+}
+.char-item {
+  display:flex; align-items:center; gap:8px;
+  padding:6px 12px; cursor:pointer;
+  transition:background .1s; position:relative;
+}
+.char-item:hover { background:var(--surface2); }
+.char-item.active {
+  background:var(--accent-bg);
+  border-left:3px solid var(--accent);
+}
+.char-thumb {
+  width:32px; height:32px; border-radius:50%;
+  object-fit:cover; object-position:top;
+  border:1px solid var(--border);
+  flex-shrink:0; background:#eee;
+}
+.char-thumb-placeholder {
+  width:32px; height:32px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  border:1px solid var(--border);
+  flex-shrink:0;
+  font-size:14px;
+}
+.char-info-row { flex:1; min-width:0; }
+.char-item-name {
+  font-size:12.5px; font-weight:500;
+  color:var(--text); white-space:nowrap;
+  overflow:hidden; text-overflow:ellipsis;
+}
+.char-item.active .char-item-name { color:var(--accent); font-weight:700; }
+.char-item-sub {
+  font-size:10.5px; color:var(--text-muted);
+  display:flex; align-items:center; gap:4px;
+}
+.elem-pip {
+  width:6px; height:6px; border-radius:50%; flex-shrink:0;
+}
+
+/* ── Main ── */
+.main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+
+.topbar {
+  background:#fff;
+  border-bottom:1px solid var(--border);
+  height:50px;
+  display:flex; align-items:center;
+  padding:0 18px; gap:0; flex-shrink:0;
+}
+.topbar-input-group {
+  display:flex; align-items:center; gap:7px;
+  padding-right:16px; margin-right:16px;
+  border-right:1px solid var(--border);
+}
+.topbar-input-group input {
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  padding:6px 12px;
+  font-family:inherit; font-size:13px;
+  color:var(--text); width:190px; outline:none;
+  transition:all .15s;
+}
+.topbar-input-group input:focus {
+  border-color:var(--accent-border);
+  background:#fff;
+}
+.topbar-input-group input::placeholder { color:var(--text-muted); }
+.go-btn {
+  background:var(--accent); border:none;
+  border-radius:var(--radius-sm); color:#fff;
+  font-family:inherit; font-size:12.5px; font-weight:600;
+  padding:6px 14px; cursor:pointer;
+  white-space:nowrap; transition:opacity .15s;
+}
+.go-btn:hover { opacity:.85; }
+.go-btn:disabled { opacity:.4; cursor:not-allowed; }
+
+.cat-tabs { display:flex; overflow-x:auto; }
+.cat-tabs::-webkit-scrollbar { display:none; }
+.cat-tab {
+  background:none; border:none;
+  border-bottom:2px solid transparent;
+  color:var(--text-sub); cursor:pointer;
+  font-family:inherit; font-size:13px; font-weight:500;
+  padding:0 12px; height:50px;
+  white-space:nowrap; transition:color .15s, border-color .15s;
+}
+.cat-tab:hover { color:var(--text); }
+.cat-tab.active { color:var(--accent); border-bottom-color:var(--accent); font-weight:700; }
+
+/* ── Content ── */
+.content-area {
+  flex:1; overflow-y:auto;
+  padding:22px 22px 40px;
+}
+.content-area::-webkit-scrollbar { width:6px; }
+.content-area::-webkit-scrollbar-thumb { background:var(--border-strong); border-radius:4px; }
+
+/* Empty */
+.empty-state {
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  height:70%; text-align:center; gap:10px;
+}
+.empty-icon { font-size:2.8rem; opacity:.35; }
+.empty-title { font-size:15px; font-weight:600; color:var(--text-sub); }
+.empty-desc { font-size:13px; color:var(--text-muted); line-height:1.7; }
+
+/* Progress */
+.progress-wrap {
+  display:none;
+  flex-direction:column;
+  align-items:center; justify-content:center;
+  height:60%; gap:18px;
+}
+.progress-wrap.show { display:flex; }
+.progress-char-img {
+  width:72px; height:72px;
+  border-radius:50%;
+  object-fit:cover; object-position:top;
+  border:2px solid var(--accent-border);
+  animation:pulse-img 1.4s ease-in-out infinite;
+}
+@keyframes pulse-img { 0%,100%{opacity:.7;transform:scale(0.97)} 50%{opacity:1;transform:scale(1)} }
+.progress-name { font-size:15px; font-weight:700; color:var(--text); }
+.progress-step { font-size:12.5px; color:var(--text-muted); min-height:18px; }
+.progress-bar-outer {
+  width:280px; height:8px;
+  background:var(--border);
+  border-radius:4px; overflow:hidden;
+}
+.progress-bar-inner {
+  height:100%;
+  background:linear-gradient(90deg, var(--accent), #e8b040);
+  border-radius:4px;
+  transition:width .4s ease;
+  width:0%;
+}
+.progress-pct {
+  font-size:22px; font-weight:700;
+  color:var(--accent);
+  font-variant-numeric:tabular-nums;
+}
+
+/* Error */
+.error-box {
+  background:#fdf0f0; border:1px solid #f0c0c0;
+  border-radius:var(--radius); color:var(--red);
+  font-size:13px; padding:14px 18px; display:none;
+}
+.error-box.show { display:block; }
+
+/* Result */
+.result-area { display:none; animation:slideUp .28s ease; }
+.result-area.show { display:block; }
+@keyframes slideUp { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+
+/* Char header */
+.char-header-card {
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:18px 20px 18px;
+  margin-bottom:14px;
+  box-shadow:var(--shadow);
+  display:flex; gap:18px; align-items:flex-start;
+}
+.char-header-img {
+  width:80px; height:80px;
+  border-radius:12px;
+  object-fit:cover; object-position:top center;
+  border:1px solid var(--border);
+  flex-shrink:0; background:#eee;
+}
+.char-header-info { flex:1; }
+.char-name-big {
+  font-size:20px; font-weight:700;
+  letter-spacing:-.02em; margin-bottom:8px;
+}
+.badges { display:flex; gap:5px; flex-wrap:wrap; margin-bottom:10px; }
+.badge {
+  border-radius:4px; font-size:11.5px;
+  font-weight:600; padding:3px 9px;
+}
+.b-star   { background:#fef8e6; color:#b8860b; border:1px solid #e8d580; }
+.b-elem   { background:var(--blue-bg); color:var(--blue); border:1px solid #c0d8f0; }
+.b-weap   { background:var(--surface2); color:var(--text-sub); border:1px solid var(--border); }
+.b-role   { background:var(--green-bg); color:var(--green); border:1px solid #b8dfc0; }
+.char-summary {
+  font-size:13px; color:var(--text-sub);
+  line-height:1.7;
+  border-top:1px solid var(--border);
+  padding-top:10px;
+}
+
+/* Prose */
+.prose {
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:20px 22px;
+  box-shadow:var(--shadow);
+  font-size:13.5px; line-height:1.85;
+}
+.prose h2 {
+  font-size:13.5px; font-weight:700; color:var(--text);
+  background:var(--surface2);
+  border-left:3px solid var(--accent);
+  border-radius:0 var(--radius-sm) var(--radius-sm) 0;
+  padding:7px 12px; margin:20px 0 10px;
+}
+.prose h2:first-child { margin-top:0; }
+.prose h3 { font-size:13px; font-weight:700; color:var(--accent); margin:14px 0 6px; }
+.prose p { margin-bottom:7px; }
+.prose p:last-child { margin-bottom:0; }
+.prose ul { padding-left:18px; margin-bottom:8px; }
+.prose li { margin-bottom:3px; }
+.prose strong { font-weight:700; }
+.prose table {
+  width:100%; border-collapse:collapse;
+  margin:10px 0 14px; font-size:12.5px;
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm); overflow:hidden;
+}
+.prose th {
+  background:var(--surface2); color:var(--text-sub);
+  font-weight:600; font-size:11.5px;
+  padding:7px 11px; text-align:left;
+  border-bottom:1px solid var(--border);
+}
+.prose td {
+  padding:7px 11px;
+  border-bottom:1px solid var(--border);
+  vertical-align:top;
+}
+.prose tr:last-child td { border-bottom:none; }
+.prose tr:nth-child(even) td { background:var(--surface2); }
+.prose td:first-child { color:var(--blue); font-weight:500; }
+.prose hr { border:none; border-top:1px solid var(--border); margin:14px 0; }
+
+/* Image grid inside prose */
+.img-grid {
+  display:flex; gap:10px; flex-wrap:wrap;
+  margin:10px 0 14px;
+}
+.img-card {
+  display:flex; flex-direction:column;
+  align-items:center; gap:5px;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:8px;
+  min-width:80px;
+}
+.img-card img {
+  width:60px; height:60px;
+  object-fit:contain;
+  border-radius:4px;
+}
+.img-card-label {
+  font-size:11px; color:var(--text-sub);
+  text-align:center; word-break:keep-all;
+  line-height:1.3;
+}
+
+@media (max-width:660px) {
+  .sidebar { display:none; }
+  .topbar-input-group input { width:140px; }
+}
+</style>
+</head>
+<body>
+
+<!-- API Key Modal -->
+<div class="api-overlay" id="apiOverlay">
+  <div class="api-modal">
+    <h2>⚔️ 원신 캐릭터 가이드</h2>
+    <p>
+      이 앱은 <strong>Anthropic API 키</strong>가 필요해요.<br>
+      <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a>에서 발급받을 수 있어요.<br><br>
+      입력한 키는 이 브라우저에만 저장되며 서버로 전송되지 않아요.
+    </p>
+    <input type="password" id="apiKeyInput" placeholder="sk-ant-api..." />
+    <div class="api-err" id="apiErr">유효하지 않은 API 키예요.</div>
+    <div class="api-modal-btns">
+      <button class="btn-primary" onclick="saveApiKey()">저장하고 시작</button>
+    </div>
+  </div>
+</div>
+
+<div class="app-wrap">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">⚔️ 원신 가이드</div>
+      <div class="logo-sub">캐릭터 검색 & 공략</div>
+      <div class="api-key-status" onclick="resetApiKey()">
+        <span class="key-dot" id="keyDot"></span>
+        <span class="key-label" id="keyLabel">API 키 없음</span>
+      </div>
+    </div>
+    <div class="sidebar-filter">
+      <input type="text" id="filterInput" placeholder="캐릭터 필터..." oninput="filterList(this.value)">
+    </div>
+    <div class="char-list" id="charList"></div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-input-group">
+        <input type="text" id="mainInput" placeholder="캐릭터 직접 입력...">
+        <button class="go-btn" id="goBtn" onclick="doSearch()">검색</button>
+      </div>
+      <div class="cat-tabs" id="catTabs">
+        <button class="cat-tab active" data-cat="all">전체</button>
+        <button class="cat-tab" data-cat="ascension">돌파 재료</button>
+        <button class="cat-tab" data-cat="talent">특성 재료</button>
+        <button class="cat-tab" data-cat="build">세팅 가이드</button>
+        <button class="cat-tab" data-cat="party">파티 구성</button>
+        <button class="cat-tab" data-cat="efficiency">효율 분석</button>
+      </div>
+    </div>
+
+    <div class="content-area">
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">⚔️</div>
+        <div class="empty-title">캐릭터를 선택하거나 검색하세요</div>
+        <div class="empty-desc">왼쪽 목록 클릭 또는 위 검색창에 이름 입력</div>
+      </div>
+
+      <!-- Progress -->
+      <div class="progress-wrap" id="progressWrap">
+        <img class="progress-char-img" id="progressImg" src="" alt="" onerror="this.style.display='none'">
+        <div class="progress-name" id="progressName"></div>
+        <div class="progress-pct" id="progressPct">0%</div>
+        <div class="progress-bar-outer">
+          <div class="progress-bar-inner" id="progressBar"></div>
+        </div>
+        <div class="progress-step" id="progressStep">검색 준비 중...</div>
+      </div>
+
+      <div class="error-box" id="errorBox"></div>
+
+      <div class="result-area" id="resultArea">
+        <div class="char-header-card" id="charHeaderCard"></div>
+        <div class="prose" id="proseOutput"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Character data ──
+const CHARS = [
+  {name:'에스코피에',  elem:'cryo',    star:5, wiki:'Escoffier'},
+  {name:'종려',        elem:'geo',     star:5, wiki:'Zhongli'},
+  {name:'나비아',      elem:'geo',     star:5, wiki:'Navia'},
+  {name:'후',          elem:'pyro',    star:5, wiki:'Hu_Tao'},
+  {name:'뇨이',        elem:'hydro',   star:5, wiki:'Nilou'},
+  {name:'치오리',      elem:'hydro',   star:5, wiki:'Chiori'},
+  {name:'말란',        elem:'cryo',    star:5, wiki:'Mualani'},
+  {name:'스커크',      elem:'hydro',   star:5, wiki:'Skirk'},
+  {name:'바레사',      elem:'anemo',   star:5, wiki:'Varesa'},
+  {name:'아를레키노',  elem:'pyro',    star:5, wiki:'Arlecchino'},
+  {name:'느비예트',    elem:'hydro',   star:5, wiki:'Neuvillette'},
+  {name:'리니',        elem:'pyro',    star:5, wiki:'Lyney'},
+  {name:'푸리나',      elem:'hydro',   star:5, wiki:'Furina'},
+  {name:'나브루즈',    elem:'pyro',    star:5, wiki:'Mavuika'},
+  {name:'시그윈',      elem:'hydro',   star:5, wiki:'Sigewinne'},
+  {name:'로스카나',    elem:'pyro',    star:5, wiki:'Rосkane'},
+  {name:'시타리',      elem:'electro', star:5, wiki:'Citlali'},
+  {name:'카베',        elem:'dendro',  star:5, wiki:'Kaveh'},
+  {name:'라이덴 쇼군', elem:'electro', star:5, wiki:'Raiden_Shogun'},
+  {name:'야에 미코',   elem:'electro', star:5, wiki:'Yae_Miko'},
+  {name:'카즈하',      elem:'anemo',   star:5, wiki:'Kazuha'},
+  {name:'에이미야',    elem:'pyro',    star:5, wiki:'Amber'},
+  {name:'호두',        elem:'pyro',    star:5, wiki:'Hu_Tao'},
+  {name:'감유',        elem:'cryo',    star:5, wiki:'Ganyu'},
+  {name:'알하이탐',    elem:'dendro',  star:5, wiki:'Alhaitham'},
+  {name:'나히다',      elem:'dendro',  star:5, wiki:'Nahida'},
+  {name:'완다러',      elem:'anemo',   star:5, wiki:'Wanderer'},
+  {name:'씨아오',      elem:'anemo',   star:5, wiki:'Xiao'},
+  {name:'닐루',        elem:'dendro',  star:5, wiki:'Nilou'},
+  {name:'유메미즈키 미즈키', elem:'anemo', star:5, wiki:'Mizuki'},
+  {name:'뎃카라비야',  elem:'electro', star:5, wiki:'Dehya'},
+  {name:'베넷',        elem:'pyro',    star:4, wiki:'Bennett'},
+  {name:'행추',        elem:'hydro',   star:4, wiki:'Xingqiu'},
+  {name:'설',          elem:'cryo',    star:4, wiki:'Xue'},
+  {name:'카에야',      elem:'cryo',    star:4, wiki:'Kaeya'},
+  {name:'리넷',        elem:'anemo',   star:4, wiki:'Lynette'},
+  {name:'피슬',        elem:'geo',     star:4, wiki:'Fischl'},
+  {name:'사유',        elem:'cryo',    star:4, wiki:'Sayu'},
+  {name:'콜레이',      elem:'dendro',  star:4, wiki:'Collei'},
+  {name:'라오란',      elem:'dendro',  star:4, wiki:'Layla'},
+  {name:'키란',        elem:'electro', star:4, wiki:'Kiran'},
+  {name:'샬로트',      elem:'cryo',    star:4, wiki:'Charlotte'},
+  {name:'린',          elem:'dendro',  star:4, wiki:'Rin'},
+];
+
+const ELEM_COLORS = {
+  cryo:'#7eb8d4', pyro:'#e07040', hydro:'#5090d0',
+  electro:'#b060d0', anemo:'#50b090', geo:'#c8a030',
+  dendro:'#70b040', none:'#aaa'
+};
+const ELEM_LABELS = {
+  cryo:'❄ 얼음', pyro:'🔥 불꽃', hydro:'💧 물',
+  electro:'⚡ 번개', anemo:'🌀 바람', geo:'⛰ 바위', dendro:'🌿 풀'
+};
+const ELEM_EMOJI = {
+  cryo:'❄', pyro:'🔥', hydro:'💧',
+  electro:'⚡', anemo:'🌀', geo:'⛰', dendro:'🌿'
+};
+
+const CATS = [
+  {id:'all',label:'전체'},
+  {id:'ascension',label:'돌파 재료'},
+  {id:'talent',label:'특성 재료'},
+  {id:'build',label:'세팅 가이드'},
+  {id:'party',label:'파티 구성'},
+  {id:'efficiency',label:'효율 분석'},
+];
+
+let curChar = '';
+let curCat  = 'all';
+let searchAbort = null;
+
+// ── API Key ──
+function getApiKey() { return localStorage.getItem('genshin_api_key') || ''; }
+function saveApiKey() {
+  const val = document.getElementById('apiKeyInput').value.trim();
+  if (!val.startsWith('sk-ant')) {
+    document.getElementById('apiErr').style.display = 'block';
+    return;
+  }
+  localStorage.setItem('genshin_api_key', val);
+  document.getElementById('apiOverlay').style.display = 'none';
+  updateKeyStatus();
+}
+function resetApiKey() {
+  if (!confirm('API 키를 초기화하고 다시 입력할까요?')) return;
+  localStorage.removeItem('genshin_api_key');
+  document.getElementById('apiOverlay').style.display = 'flex';
+  document.getElementById('apiKeyInput').value = '';
+  updateKeyStatus();
+}
+function updateKeyStatus() {
+  const hasKey = !!getApiKey();
+  document.getElementById('keyDot').className = 'key-dot' + (hasKey ? ' on' : '');
+  document.getElementById('keyLabel').textContent = hasKey ? 'API 키 설정됨 (클릭하여 변경)' : 'API 키 없음';
+}
+
+// ── Init ──
+window.addEventListener('load', () => {
+  if (getApiKey()) {
+    document.getElementById('apiOverlay').style.display = 'none';
+  }
+  updateKeyStatus();
+  buildList();
+
+  document.getElementById('catTabs').querySelectorAll('.cat-tab').forEach(t => {
+    t.addEventListener('click', () => {
+      document.querySelectorAll('.cat-tab').forEach(b => b.classList.remove('active'));
+      t.classList.add('active');
+      curCat = t.dataset.cat;
+      if (curChar) doSearch(curChar);
+    });
+  });
+
+  document.getElementById('mainInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doSearch();
+  });
+  document.getElementById('apiKeyInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') saveApiKey();
+  });
+});
+
+// ── Character image URL ──
+function charImgUrl(name) {
+  const c = CHARS.find(x => x.name === name);
+  if (!c) return '';
+  // Fandom wiki card image
+  const wikiName = encodeURIComponent(c.wiki.replace(/_/g,' '));
+  return `https://genshin-impact.fandom.com/wiki/Special:FilePath/${c.wiki}_Card.png`;
+}
+
+// ── Sidebar list ──
+function buildList(filter = '') {
+  const lf = filter.toLowerCase();
+  const filtered = CHARS.filter(c => !lf || c.name.includes(lf));
+  const fives = filtered.filter(c => c.star === 5);
+  const fours = filtered.filter(c => c.star === 4);
+
+  let h = '';
+  if (fives.length) {
+    h += `<div class="group-label">5성</div>`;
+    fives.forEach(c => h += itemHTML(c));
+  }
+  if (fours.length) {
+    h += `<div class="group-label">4성</div>`;
+    fours.forEach(c => h += itemHTML(c));
+  }
+  if (!filtered.length) h = `<div style="padding:16px 14px;color:var(--text-muted);font-size:12.5px">결과 없음</div>`;
+
+  document.getElementById('charList').innerHTML = h;
+  document.querySelectorAll('.char-item').forEach(el => {
+    if (el.dataset.name === curChar) el.classList.add('active');
+    el.addEventListener('click', () => {
+      document.getElementById('mainInput').value = el.dataset.name;
+      doSearch(el.dataset.name);
+    });
+  });
+}
+
+function itemHTML(c) {
+  const img = charImgUrl(c.name);
+  const thumbHtml = img
+    ? `<img class="char-thumb" src="${img}" alt="${c.name}" onerror="this.style.display='none'">`
+    : `<div class="char-thumb-placeholder" style="background:${ELEM_COLORS[c.elem]}22">${ELEM_EMOJI[c.elem]||'⚔'}</div>`;
+  return `<div class="char-item" data-name="${c.name}">
+    ${thumbHtml}
+    <div class="char-info-row">
+      <div class="char-item-name">${c.name}</div>
+      <div class="char-item-sub">
+        <span class="elem-pip" style="background:${ELEM_COLORS[c.elem]}"></span>
+        ${ELEM_LABELS[c.elem]||''} · ★${c.star}
+      </div>
+    </div>
+  </div>`;
+}
+
+function filterList(v) { buildList(v); }
+
+// ── Progress helpers ──
+let progressTimer = null;
+const PROGRESS_STEPS = [
+  {pct:5,  msg:'웹 검색 시작 중...'},
+  {pct:15, msg:'캐릭터 기본 정보 검색 중...'},
+  {pct:30, msg:'돌파/특성 재료 정보 수집 중...'},
+  {pct:50, msg:'세팅 가이드 검색 중...'},
+  {pct:65, msg:'파티 구성 정보 분석 중...'},
+  {pct:78, msg:'효율 데이터 수집 중...'},
+  {pct:88, msg:'정보 정리 중...'},
+  {pct:95, msg:'마무리 중...'},
+];
+
+function startProgress(name) {
+  const wrap = document.getElementById('progressWrap');
+  wrap.classList.add('show');
+  document.getElementById('progressName').textContent = name;
+  document.getElementById('progressPct').textContent = '0%';
+  document.getElementById('progressBar').style.width = '0%';
+  document.getElementById('progressStep').textContent = '검색 준비 중...';
+
+  // Set char image
+  const imgEl = document.getElementById('progressImg');
+  const url = charImgUrl(name);
+  if (url) { imgEl.src = url; imgEl.style.display = ''; }
+  else imgEl.style.display = 'none';
+
+  let stepIdx = 0;
+  function advance() {
+    if (stepIdx >= PROGRESS_STEPS.length) return;
+    const step = PROGRESS_STEPS[stepIdx++];
+    setProgress(step.pct, step.msg);
+    const delay = 800 + Math.random() * 1200;
+    progressTimer = setTimeout(advance, delay);
+  }
+  advance();
+}
+
+function setProgress(pct, msg) {
+  document.getElementById('progressPct').textContent = pct + '%';
+  document.getElementById('progressBar').style.width = pct + '%';
+  if (msg) document.getElementById('progressStep').textContent = msg;
+}
+
+function stopProgress() {
+  clearTimeout(progressTimer);
+  setProgress(100, '완료!');
+  setTimeout(() => {
+    document.getElementById('progressWrap').classList.remove('show');
+  }, 400);
+}
+
+// ── Search ──
+async function doSearch(override) {
+  const name = override || document.getElementById('mainInput').value.trim();
+  if (!name) { document.getElementById('mainInput').focus(); return; }
+
+  const apiKey = getApiKey();
+  if (!apiKey) {
+    document.getElementById('apiOverlay').style.display = 'flex';
+    return;
+  }
+
+  curChar = name;
+  buildList(document.getElementById('filterInput').value);
+
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('resultArea').classList.remove('show');
+  document.getElementById('errorBox').classList.remove('show');
+  document.getElementById('goBtn').disabled = true;
+
+  startProgress(name);
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true',
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 3000,
+        system: `원신(Genshin Impact) 전문 공략 가이드. 웹 검색으로 최신 정보를 찾아 한국어로 정확하게 정리해줘.
+마크다운 사용 (## 제목, **굵게**, | 표 형식).
+모든 이름은 반드시 공식 한국어 번역 이름으로 적어줘 (재료명, 무기명, 성유물명, 캐릭터명, 보스명, 지역명 모두).
+서론 없이 바로 핵심 정보부터 시작.
+이미지 섹션에서는 아래 형식으로 이미지 그리드를 삽입해줘:
+[IMG_GRID: 아이템1|아이템2|아이템3]
+예: [IMG_GRID: 서늘한 빙옥|비밀근원 분사구|푸른 수정 소라]`,
+        tools: [{type:'web_search_20250305', name:'web_search'}],
+        messages: [{role:'user', content: makePrompt(name, curCat)}]
+      })
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error?.message || `API 오류 ${res.status}`);
+    }
+    const data = await res.json();
+    const text = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
+    if (!text.trim()) throw new Error('결과를 가져오지 못했습니다.');
+
+    stopProgress();
+    renderResult(name, text);
+
+  } catch(e) {
+    stopProgress();
+    document.getElementById('progressWrap').classList.remove('show');
+    document.getElementById('errorBox').textContent = '오류: ' + e.message;
+    document.getElementById('errorBox').classList.add('show');
+  } finally {
+    document.getElementById('goBtn').disabled = false;
+  }
+}
+
+function makePrompt(name, cat) {
+  const base = `원신 캐릭터 "${name}" 정보를 웹 검색해서 알려줘. 최신 버전 기준. 모든 이름은 공식 한국어 번역으로.\n\n`;
+  const cats = {
+    all:`## 기본 정보\n성급·원소·무기 종류·출신 지역·역할(딜러/서포터 등)·특징 1~2줄
+
+## 돌파 재료
+| 재료명 | 수급처 | Lv~60 | Lv~70 | Lv~80 | Lv~90 |
+모라·영웅의 경험도 포함. 재료 이미지 그리드: [IMG_GRID: 재료1|재료2|재료3|재료4]
+
+## 특성 재료
+| 재료명 | 수급처 | Lv~6 | Lv~8 | Lv~10 |
+비경 이름·요일, 주간보스 재료 포함. 재료 이미지 그리드: [IMG_GRID: 재료1|재료2|재료3]
+
+## 세팅 가이드
+**추천 무기** (표: 무기명 | 등급 | 추천 이유)
+무기 이미지: [IMG_GRID: 무기1|무기2|무기3]
+**추천 성유물** (표: 세트명 | 효과 | 이유)
+**성유물 스탯**: 모래/잔/왕관 메인스탯, 부속 스탯 순위
+
+## 파티 구성
+추천 조합 3개 (고과금/범용/저과금): 각 4명 + 이유
+
+## 효율 분석
+돌파 효율, 무기 효율 표, 특성 우선순위 표`,
+
+    ascension:`## 캐릭터 돌파 재료
+| 재료명 | 수급처 | Lv~60 | Lv~70 | Lv~80 | Lv~90 |
+모라·영웅의 경험 포함. 수급처 구체적으로.
+재료 이미지: [IMG_GRID: 재료1|재료2|재료3|재료4]`,
+
+    talent:`## 특성 돌파 재료
+| 재료명 | 수급처 | Lv~6 | Lv~8 | Lv~9 | Lv~10 |
+특성 비경 이름·요일, 주간보스 재료, 지식의 왕관 여부, 모라 필요량.
+재료 이미지: [IMG_GRID: 재료1|재료2|재료3]`,
+
+    build:`## 추천 무기
+| 무기명 | 등급 | 추천 이유 |
+무기 이미지: [IMG_GRID: 무기1|무기2|무기3]
+
+## 추천 성유물
+| 세트명 | 효과 | 추천 이유 |
+성유물 이미지: [IMG_GRID: 세트1|세트2]
+
+## 성유물 스탯 우선순위
+모래/잔/왕관 메인스탯, 부속 스탯 순위, 목표 수치
+
+## 특성 육성 우선순위`,
+
+    party:`## 파티 구성 추천
+세 가지 조합:
+1. 최고 성능 파티 (고과금)
+2. 범용 파티
+3. 무/저과금 파티
+각각 캐릭터 4명 + 역할 + 핵심 반응 + 이미지 그리드: [IMG_GRID: 캐릭터1|캐릭터2|캐릭터3|캐릭터4]`,
+
+    efficiency:`## 돌파 효율
+투자 대비 체감 성능 평가 (상/중/하 + 이유)
+
+## 무기 효율
+| 무기명 | 획득 방법 | 효율 |
+
+## 특성 우선순위
+| 특성 | 우선도 | 이유 |
+
+## 총평
+뽑아야 할 이유, 메타 포지션, 대체 캐릭터`
+  };
+  return base + (cats[cat]||cats.all);
+}
+
+// ── Render result ──
+function renderResult(name, raw) {
+  const cData = CHARS.find(c=>c.name===name) || {};
+
+  // Detect badges
+  const weaps = ['장병기','대검','단검','법구','활','한손검'];
+  const weapBadge = weaps.find(w=>raw.includes(w))||'';
+  const roles = ['메인 딜러','서브 딜러','딜러','서포터','힐러','쉴더','버퍼'];
+  const roleBadge = roles.find(r=>raw.includes(r))||'';
+
+  // Header
+  const imgUrl = charImgUrl(name);
+  const imgHtml = imgUrl
+    ? `<img class="char-header-img" src="${imgUrl}" alt="${name}" onerror="this.style.display='none'">`
+    : `<div class="char-header-img" style="background:${ELEM_COLORS[cData.elem]||'#eee'}22;display:flex;align-items:center;justify-content:center;font-size:2rem">${ELEM_EMOJI[cData.elem]||'⚔'}</div>`;
+
+  const summary = raw.replace(/[#*|`\[\]]/g,'').split(/[\n.。]/).map(s=>s.trim()).filter(s=>s.length>20).find(s=>s.includes(name)||s.includes('캐릭터'))||'';
+
+  document.getElementById('charHeaderCard').innerHTML = `
+    ${imgHtml}
+    <div class="char-header-info">
+      <div class="char-name-big">${name}</div>
+      <div class="badges">
+        ${cData.star ? `<span class="badge b-star">★${cData.star}성</span>` : ''}
+        ${cData.elem && ELEM_LABELS[cData.elem] ? `<span class="badge b-elem">${ELEM_LABELS[cData.elem]}</span>` : ''}
+        ${weapBadge ? `<span class="badge b-weap">${weapBadge}</span>` : ''}
+        ${roleBadge ? `<span class="badge b-role">${roleBadge}</span>` : ''}
+      </div>
+      ${summary ? `<div class="char-summary">${summary.slice(0,180)}</div>` : ''}
+    </div>`;
+
+  document.getElementById('proseOutput').innerHTML = md2html(raw, name);
+  document.getElementById('resultArea').classList.add('show');
+}
+
+// ── Image grid helper ──
+function makeImgGrid(itemsStr) {
+  const items = itemsStr.split('|').map(s=>s.trim()).filter(Boolean);
+  const cards = items.map(item => {
+    // Try wiki image
+    const wikiSlug = item.replace(/\s+/g,'_');
+    const imgUrl = `https://genshin-impact.fandom.com/wiki/Special:FilePath/${encodeURIComponent(wikiSlug)}.png`;
+    return `<div class="img-card">
+      <img src="${imgUrl}" alt="${item}" onerror="this.parentElement.style.display='none'">
+      <div class="img-card-label">${item}</div>
+    </div>`;
+  }).join('');
+  return `<div class="img-grid">${cards}</div>`;
+}
+
+// ── Markdown → HTML ──
+function md2html(src, charName) {
+  // Handle [IMG_GRID: ...] tokens
+  src = src.replace(/\[IMG_GRID:\s*([^\]]+)\]/g, (_, items) => `\n__IMGGRID__${items}__ENDGRID__\n`);
+
+  // Tables
+  src = src.replace(/((?:\|[^\n]+\|\n?)+)/g, blk => {
+    const rows = blk.trim().split('\n');
+    let html = '<table>', hdr = true;
+    for (const row of rows) {
+      if (/^\|[-| :]+\|$/.test(row.trim())) { hdr = false; continue; }
+      const cells = row.split('|').slice(1,-1);
+      const tag = hdr ? 'th' : 'td';
+      html += '<tr>' + cells.map(c=>`<${tag}>${inl(c.trim())}</${tag}>`).join('') + '</tr>';
+      hdr = false;
+    }
+    return html + '</table>';
+  });
+
+  const lines = src.split('\n');
+  let out = '', inUl = false;
+
+  for (const l of lines) {
+    // IMG_GRID
+    if (l.includes('__IMGGRID__')) {
+      if (inUl) { out += '</ul>'; inUl = false; }
+      const m = l.match(/__IMGGRID__(.+?)__ENDGRID__/);
+      if (m) out += makeImgGrid(m[1]);
+      continue;
+    }
+    if (l.startsWith('<table')) { if(inUl){out+='</ul>';inUl=false;} out+=l; continue; }
+    if (/^#{1,2} /.test(l)) { if(inUl){out+='</ul>';inUl=false;} out+=`<h2>${inl(l.replace(/^#+\s/,''))}</h2>`; continue; }
+    if (/^### /.test(l))    { if(inUl){out+='</ul>';inUl=false;} out+=`<h3>${inl(l.replace(/^### /,''))}</h3>`; continue; }
+    if (/^[-*] /.test(l))   { if(!inUl){out+='<ul>';inUl=true;} out+=`<li>${inl(l.replace(/^[-*] /,''))}</li>`; continue; }
+    if (inUl) { out+='</ul>'; inUl=false; }
+    if (/^---+$/.test(l.trim())) { out+='<hr>'; continue; }
+    if (!l.trim()) continue;
+    out += `<p>${inl(l)}</p>`;
+  }
+  if (inUl) out += '</ul>';
+  return out;
+}
+
+function inl(s) {
+  return s
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g,'<em style="font-style:normal;color:#6b6860">$1</em>')
+    .replace(/`(.+?)`/g,'<code style="background:#f0eeea;padding:1px 5px;border-radius:3px;font-size:12px">$1</code>');
+}
+</script>
+</body>
+</html>

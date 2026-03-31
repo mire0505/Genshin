@@ -308,6 +308,49 @@ const MAT_IMG = {
   '성인 버드나무 씨앗':'Fungal_Spores','성숙한 버드나무 씨앗':'Luminescent_Pollen','완전한 버드나무 씨앗':'Crystalline_Cyst_Dust',
   '낡은 뼈다귀':'Old_Bone','풍화된 뼈다귀':'Fragile_Bone_Shard','단단한 뼈다귀':'Sturdy_Bone_Shard',
   '침식된 불꽃뿔':'Desiccated_Shell',
+  // 노드크라이 신규 재료
+  '자라나는 비취 가루':'Nagadus_Emerald_Sliver',
+  '자라나는 비취 조각':'Nagadus_Emerald_Fragment',
+  '자라나는 비취 덩이':'Nagadus_Emerald_Chunk',
+  '자라나는 비취':'Nagadus_Emerald_Gemstone',
+  '승리의 자수정 가루':'Vajrada_Amethyst_Sliver',
+  '승리의 자수정 조각':'Vajrada_Amethyst_Fragment',
+  '승리의 자수정 덩이':'Vajrada_Amethyst_Chunk',
+  '승리의 자수정':'Vajrada_Amethyst_Gemstone',
+  '순수한 청금석 가루':'Varunada_Lazurite_Sliver',
+  '순수한 청금석 조각':'Varunada_Lazurite_Fragment',
+  '순수한 청금석 덩이':'Varunada_Lazurite_Chunk',
+  '순수한 청금석':'Varunada_Lazurite_Gemstone',
+  '불타오르는 마노 가루':'Agnidus_Agate_Sliver',
+  '불타오르는 마노 조각':'Agnidus_Agate_Fragment',
+  '불타오르는 마노 덩이':'Agnidus_Agate_Chunk',
+  '불타오르는 마노':'Agnidus_Agate_Gemstone',
+  '빛을 품은 날개':'Lightless_Eye_of_the_Maelstrom',
+  '달빛 은':'Moonfall_Silver',
+  '달의 힘 오리 금형':'Ducky_Mold',
+  '서리촛대꽃':'Frostlamp_Flower',
+  '빛나는 뿔':'Radiant_Antler',
+  '호랑가시나무풀':'Winter_Icelea',
+  '솔방울 호박':'Pine_Amber',
+  '훼손된 구동축':'Heavy_Horn',
+  '강화 구동축':'Black_Bronze_Horn',
+  '정밀 구동축':'Black_Crystal_Horn',
+  '슬라임 응축액':'Slime_Condensate',
+  '슬라임청':'Slime_Secretions',
+  '슬라임 원액':'Slime_Concentrate',
+  '달빛의 가르침':'Teachings_of_Light',
+  '달빛의 인도':'Guide_to_Light',
+  '달빛의 철학':'Philosophies_of_Light',
+  '유랑의 가르침':'Teachings_of_Ballad',
+  '유랑의 인도':'Guide_to_Ballad',
+  '유랑의 철학':'Philosophies_of_Ballad',
+  '시문의 가르침':'Teachings_of_Ballad',
+  '시문의 인도':'Guide_to_Ballad',
+  '시문의 철학':'Philosophies_of_Ballad',
+  '침식된 비늘깃':'Desiccated_Shell',
+  '승격·퀸':'Mirror_of_Mushin',
+  '침식된 태양':'Lightless_Silhouette',
+  '군용 순환식 달의 힘 코어':'Lightless_Eye_of_the_Maelstrom',
   '번영의 가르침':'Teachings_of_Prosperity','번영의 인도':'Guide_to_Prosperity','번영의 철학':'Philosophies_of_Prosperity',
   '자유의 가르침':'Teachings_of_Freedom','자유의 인도':'Guide_to_Freedom','자유의 철학':'Philosophies_of_Freedom',
   '기억의 가르침':'Teachings_of_Ballad','기억의 인도':'Guide_to_Ballad','기억의 철학':'Philosophies_of_Ballad',
@@ -338,6 +381,14 @@ const WEAPON_IMG = {
   '희생의 검':'Sacrificial_Sword','희생의 법구':'Sacrificial_Fragments',
   '해묵은 추억':'Wandering_Evenstar','창생의 에메랄드':'Toukabou_Shigure',
   '파도 헤치기':'Surf%27s_Up','천암의 창':'Lithic_Spear','천암의 검':'Lithic_Blade',
+  // 노드크라이 신규 무기
+  '밤을 엮는 거울':'Silvershower_Heartstrings',
+  '적사지의 주인':'Cloudforged',
+  '진실의 함':'Calamity_Queller',
+  '회색 실':'Silvershower_Heartstrings',
+  '유성의 유산':'Lumidouce_Elegy',
+  '금빛 류트':'Fleuve_Cendre_Ferryman',
+  '서릿빛 새벽':'Ibis_Piercer',
 };
 
 const ARTIFACT_IMG = {
@@ -351,6 +402,10 @@ const ARTIFACT_IMG = {
   '광채':'Unfinished_Reverie','마판 오프닝':'Marechaussee_Hunter',
   '스크리아빈':'Obsidian_Codex','문명의 빛':'Fragment_of_Harmonic_Whimsy',
   '이계의 유파':'Gilded_Dreams','칸나즈카 통곡':'Blizzard_Strayer',
+  // 노드크라이 신규 성유물
+  '달을 잣는 밤의 노래':'Scroll_of_the_Hero_of_Cinder_City',
+  '경계가 드러난 밤':'Obsidian_Codex',
+  '하늘 경계가 드러난 밤':'Fragment_of_Harmonic_Whimsy',
 };
 
 const CHAR_DATA = {
@@ -890,9 +945,217 @@ const CHAR_DATA = {
     ],
     efficiency:'4성 중 최상위. 물 원소 지속 부착 독보적. 모든 팀에서 필수급.',
   },
-};
 
-// ── 캐릭터 목록 (사이드바용) ──
+  // ──────────────────────────────────────────────────────
+  //  라우마 (6.0 · 노드크라이)
+  // ──────────────────────────────────────────────────────
+  '라우마':{elem:'dendro',star:5,weapon:'법구',region:'노드크라이',role:'서포터 / 서브 딜러',
+    desc:'서리달 아이의 달을 읊는 사자. 달개화 반응을 강화하는 풀 원소 서포터. 현 메타 0티어 핵심 캐릭터.',
+    img:'Lauma_Card',
+    ascension:{
+      gem:['자라나는 비취 가루','자라나는 비취 조각','자라나는 비취 덩이','자라나는 비취'],
+      gemSource:'식탐의 숲룡 산왕 / 무상의 풀 / 합성대',
+      boss:'빛을 품은 날개',bossSource:'달빛 환영 나비 (노드크라이)',
+      local:'달빛 은',localSource:'노드크라이 지역 특산물',
+      mob:['마모된 표장','정교한 표장','서릿빛 표장'],
+      mobSource:'우인단 특수부대 / 스타더스트 교환',
+      mora:2092530,xp:419,
+    },
+    talent:{
+      book:['달빛의 가르침','달빛의 인도','달빛의 철학'],
+      bookDays:'월·목·일 (노드크라이 특성 비경)',
+      weekly:'침식된 비늘깃',weeklySource:'침식된 근원의 불꽃 주인 (나타)',
+      crown:3,mora:4957500,
+    },
+    weapons:[
+      {name:'밤을 엮는 거울',stars:5,note:'전용 무기. 달개화 + 원소 마스터리 극대화'},
+      {name:'기억나는 태고',stars:5,note:'원소 마스터리 최대화'},
+      {name:'금빛 류트',stars:4,note:'이벤트 4성. 에너지 충전 +45% + 원소 마스터리 +200. 무과금 최강'},
+      {name:'달빛을 향해 걸어요',stars:4,note:'원소 마스터리 기반 안정적 4성'},
+    ],
+    artifacts:[
+      {name:'심해 종자',note:'팀 풀 원소 피해 버프. 팀에 다른 풀 캐릭이 없을 때'},
+      {name:'달을 잣는 밤의 노래',note:'노드크라이 전용 신규 성유물. 달개화 피해 + 팀 원소 마스터리 최대 120 증가'},
+    ],
+    artifactStats:{sand:'원소 마스터리',cup:'원소 마스터리',crown:'원소 마스터리',
+      sub:'원소 마스터리 ≥ 에너지 충전 효율 (150%+) ≥ 치명타율'},
+    talentPriority:['원소 폭발','원소 스킬','일반 공격'],
+    parties:[
+      {name:'달개화 고점',chars:['라우마','네페르','닐루','나히다'],note:'달개화 반응 극대화. 현 메타 최강 조합'},
+      {name:'달개화 범용',chars:['라우마','나히다','코코미','라이덴 쇼군'],note:'풀·물·번개 달개화 하이브리드'},
+      {name:'저과금',chars:['라우마','콜레이','행추','피슬'],note:'4성 위주 개화 파티'},
+    ],
+    efficiency:'현 메타 0티어 서포터. 달개화 파티 필수 캐릭터. 네페르와 시너지 극상. 라우마 유무로 딜량 최대 40% 차이.',
+  },
+
+  // ──────────────────────────────────────────────────────
+  //  플린스 (6.0 · 노드크라이)
+  // ──────────────────────────────────────────────────────
+  '플린스':{elem:'electro',star:5,weapon:'장병기',region:'노드크라이',role:'메인 딜러',
+    desc:'노드크라이 사냥꾼. 달감전 반응을 활용하는 번개 원소 메인 딜러. 이네파와 조합 시 최강 성능.',
+    img:'Flins_Card',
+    ascension:{
+      gem:['승리의 자수정 가루','승리의 자수정 조각','승리의 자수정 덩이','승리의 자수정'],
+      gemSource:'천년 묵은 진주 기린 / 번개 나무 / 무상의 뇨전 / 합성대',
+      boss:'달의 힘 오리 금형',bossSource:'강펀치 오리 (노드크라이)',
+      local:'서리촛대꽃',localSource:'종야의 묘지 / 서리달 마을 (노드크라이)',
+      mob:['훼손된 구동축','강화 구동축','정밀 구동축'],
+      mobSource:'기갑선 / 스타더스트 교환 / 합성대',
+      mora:2092530,xp:419,
+    },
+    talent:{
+      book:['유랑의 가르침','유랑의 인도','유랑의 철학'],
+      bookDays:'수·토·일 (노드크라이 특성 비경)',
+      weekly:'승격·퀸',weeklySource:'문 앞의 체스 마녀의 시련 (몬드)',
+      crown:3,mora:4957500,
+    },
+    weapons:[
+      {name:'적사지의 주인',stars:5,note:'전용 무기. 달감전 극대화'},
+      {name:'정토일여',stars:5,note:'에너지 충전 + 번개 딜'},
+      {name:'노드크라이 단조 5재',stars:4,note:'단조 무기 5재련. 전무 대비 82% 효율'},
+      {name:'희극',stars:4,note:'에너지 충전 안정화'},
+    ],
+    artifacts:[
+      {name:'경계가 드러난 밤',note:'신규 성유물. 달감전 특화. 2순위 대비 10%+ 차이'},
+      {name:'황금 극단',note:'공격력 2+2 조합 대안'},
+    ],
+    artifactStats:{sand:'공격력%',cup:'번개 원소 피해 보너스',crown:'치명타율 / 치명타 피해',
+      sub:'공격력% ≥ 치명타율 ≥ 치명타 피해 ≥ 에너지 충전 효율 (110~140%)'},
+    talentPriority:['원소 폭발','원소 스킬','일반 공격'],
+    parties:[
+      {name:'달감전 고점',chars:['플린스','이네파','아이노','설'],note:'이네파+플린스 달감전 최강 조합'},
+      {name:'달감전 범용',chars:['플린스','아이노','야란','올로룬'],note:'물·번개 달감전 기본 조합'},
+      {name:'저과금',chars:['플린스','피슬','행추','베넷'],note:'4성 위주 번개·물 파티'},
+    ],
+    efficiency:'이네파와 함께 사용 시 0.5티어. 단독으로도 준수한 번개 딜러. 달감전 메타에서 필수급.',
+  },
+
+  // ──────────────────────────────────────────────────────
+  //  네페르 (6.1 · 노드크라이)
+  // ──────────────────────────────────────────────────────
+  '네페르':{elem:'dendro',star:5,weapon:'활',region:'노드크라이',role:'메인 딜러',
+    desc:'비밀의 집 여주인. 달개화 메인 딜러. 원소 마스터리 기반 달개화 반응으로 현 메타 0티어 평가. 라우마와 시너지 극상.',
+    img:'Nefer_Card',
+    ascension:{
+      gem:['자라나는 비취 가루','자라나는 비취 조각','자라나는 비취 덩이','자라나는 비취'],
+      gemSource:'식탐의 숲룡 산왕 / 무상의 풀 / 합성대',
+      boss:'달빛 경로의 비늘',bossSource:'노드크라이 보스',
+      local:'솔방울 호박',localSource:'노드크라이 지역 특산물',
+      mob:['마모된 표장','정교한 표장','서릿빛 표장'],
+      mobSource:'우인단 특수부대 / 스타더스트 교환',
+      mora:2092530,xp:419,
+    },
+    talent:{
+      book:['달빛의 가르침','달빛의 인도','달빛의 철학'],
+      bookDays:'월·목·일 (노드크라이 특성 비경)',
+      weekly:'도토레의 인공 눈동자',weeklySource:'도토레 (노드크라이 주간보스)',
+      crown:3,mora:4957500,
+    },
+    weapons:[
+      {name:'진실의 함',stars:5,note:'전용 무기. EM 기반 달개화 피해 극대화'},
+      {name:'사풍 원서',stars:5,note:'원소 숙련 + 안정적 법구 성능'},
+      {name:'카구라의 진의',stars:5,note:'스킬 강화 + 치명타 피해'},
+      {name:'서릿빛 새벽',stars:4,note:'6.1 이벤트 4성. 치명타 피해 + 원소 마스터리'},
+    ],
+    artifacts:[
+      {name:'하늘 경계가 드러난 밤',note:'네페르 전용 최강 성유물. EM +80 + 달개화 피해 22.9% 증가'},
+      {name:'심해 종자',note:'팀 풀 원소 버프 대안'},
+    ],
+    artifactStats:{sand:'원소 마스터리',cup:'원소 마스터리',crown:'원소 마스터리 / 치명타 피해',
+      sub:'원소 마스터리 800+ ≥ 치명타율 60% ≥ 치명타 피해 250% ≥ 에너지 충전 효율 140%'},
+    talentPriority:['원소 스킬','원소 폭발','일반 공격'],
+    parties:[
+      {name:'달개화 고점',chars:['네페르','라우마','닐루','나히다'],note:'라우마 유무로 40% 딜 차이. 현 메타 최강'},
+      {name:'달개화 범용',chars:['네페르','라우마','아이노','행추'],note:'달개화 + 안정적 물 부착'},
+      {name:'라우마 없을 때',chars:['네페르','나히다','닐루','코코미'],note:'닐루 풍요핵 + 나히다 풀 부착'},
+    ],
+    efficiency:'현 메타 0티어 메인 딜러. 마비카·스커크와 함께 최상위권. 라우마 보유 시 압도적 딜량. 조작 난이도 중상.',
+  },
+
+  // ──────────────────────────────────────────────────────
+  //  두린 (6.2 · 노드크라이)
+  // ──────────────────────────────────────────────────────
+  '두린':{elem:'pyro',star:5,weapon:'단검',region:'노드크라이',role:'메인 딜러 / 서포터',
+    desc:'몬드의 전설 속 용. 증발 반응에 특화된 불꽃 한손검 딜러. 베넷+향릉을 합친 듯한 서포터 겸 딜러 포지션.',
+    img:'Durin_Card',
+    ascension:{
+      gem:['불타오르는 마노 가루','불타오르는 마노 조각','불타오르는 마노 덩이','불타오르는 마노'],
+      gemSource:'용암철갑 제왕 / 화염 나무 / 무상의 불 / 합성대',
+      boss:'군용 순환식 달의 힘 코어',bossSource:'초대형 기갑 전함 / 기동전투 요새 (노드크라이)',
+      local:'서리촛대꽃',localSource:'종야의 묘지 / 서리달 마을 (노드크라이)',
+      mob:['마모된 표장','정교한 표장','서릿빛 표장'],
+      mobSource:'우인단 특수부대 / 스타더스트 교환',
+      mora:2092530,xp:419,
+    },
+    talent:{
+      book:['시문의 가르침','시문의 인도','시문의 철학'],
+      bookDays:'수·토·일 (몬드 숙달 비경: 잠들어 있는 나라)',
+      weekly:'침식된 태양',weeklySource:'침식된 근원의 불꽃 주인 (나타)',
+      crown:3,mora:4957500,
+    },
+    weapons:[
+      {name:'유성의 유산',stars:5,note:'전용 무기. 증발 반응 극대화'},
+      {name:'단죄의 검',stars:5,note:'치명타 피해 + 강력한 딜'},
+      {name:'왕의 결단',stars:5,note:'공격력 + 크리 밸런스'},
+      {name:'흑암의 칼날',stars:4,note:'치명타 피해 최강 4성'},
+    ],
+    artifacts:[
+      {name:'불꽃의 마녀',note:'증발 반응 최대화'},
+      {name:'황금 극단',note:'불꽃 피해 + 치명타 강화'},
+    ],
+    artifactStats:{sand:'공격력%',cup:'불꽃 원소 피해 보너스',crown:'치명타율 / 치명타 피해',
+      sub:'치명타율 ≥ 치명타 피해 ≥ 공격력%'},
+    talentPriority:['원소 폭발','원소 스킬','일반 공격'],
+    parties:[
+      {name:'증발 팀',chars:['두린','행추','베넷','카즈하'],note:'증발 + 소용돌이 + 공격력 버프'},
+      {name:'불꽃 파티',chars:['두린','라우마','콜롬비나','베넷'],note:'달개화 + 불꽃 전환 하이브리드'},
+      {name:'저과금',chars:['두린','행추','베넷','카에야'],note:'4성 위주 증발'},
+    ],
+    efficiency:'증발 팀에서 준수한 불꽃 딜러. 서포터 역할도 가능한 유연성. 라우마+콜롬비나 등 노드크라이 캐릭터와 시너지.',
+  },
+
+  // ──────────────────────────────────────────────────────
+  //  콜롬비나 (6.3 · 노드크라이)
+  // ──────────────────────────────────────────────────────
+  '콜롬비나':{elem:'hydro',star:5,weapon:'법구',region:'노드크라이',role:'서포터',
+    desc:'우인단 제1집행관 달의 소녀. 물 원소 안정 부착 + 달 반응 내성 감소. 노드크라이 파티의 푸리나로 불림. 4돌파가 성능 돌파.',
+    img:'Columbina_Card',
+    ascension:{
+      gem:['순수한 청금석 가루','순수한 청금석 조각','순수한 청금석 덩이','순수한 청금석'],
+      gemSource:'물의 환인간 / 무상의 물 / 합성대',
+      boss:'빛나는 뿔',bossSource:'서리밤 하늘 영주 (노드크라이)',
+      local:'호랑가시나무풀',localSource:'엠블라 기둥 / 암스바르트니르 호수 근처 (노드크라이)',
+      mob:['슬라임 응축액','슬라임청','슬라임 원액'],
+      mobSource:'슬라임 / 스타더스트 교환 / 합성대',
+      mora:2092530,xp:419,
+    },
+    talent:{
+      book:['달빛의 가르침','달빛의 인도','달빛의 철학'],
+      bookDays:'월·목·일 (노드크라이 특성 비경: 어둠에 잠긴 도시)',
+      weekly:'도토레의 결정체',weeklySource:'도토레 (노드크라이 주간보스)',
+      crown:3,mora:4957500,
+    },
+    weapons:[
+      {name:'회색 실',stars:5,note:'전용 무기. 물 부착 + 달 반응 강화 극대화'},
+      {name:'긴 밤의 소고',stars:5,note:'HP 기반 + 폰타인 캐릭터 호환'},
+      {name:'희극',stars:4,note:'에너지 충전 + 원소 폭발 회전'},
+      {name:'희생의 법구',stars:4,note:'스킬 재사용 대기 감소'},
+    ],
+    artifacts:[
+      {name:'현무 수의',note:'물 원소 피해 + HP 기반 시너지'},
+      {name:'황금 극단',note:'폭발 데미지 최대화'},
+    ],
+    artifactStats:{sand:'HP%',cup:'물 원소 피해 보너스',crown:'치명타율 / HP%',
+      sub:'HP% ≥ 에너지 충전 효율 ≥ 치명타율 ≥ 치명타 피해'},
+    talentPriority:['원소 폭발','원소 스킬','일반 공격'],
+    parties:[
+      {name:'달개화 고점',chars:['콜롬비나','네페르','라우마','나히다'],note:'달 반응 내성 감소 + 달개화 극대화'},
+      {name:'달감전 파티',chars:['콜롬비나','플린스','이네파','아이노'],note:'물 부착으로 달감전 안정화'},
+      {name:'범용 물 파티',chars:['콜롬비나','느비예트','카즈하','베넷'],note:'범용 물 원소 + 소용돌이'},
+    ],
+    efficiency:'노드크라이 파티의 핵심 서포터. 단독으로도 모든 달 반응 가능. 4돌파 시 성능 폭발적 증가. 범용성 높음.',
+  },
+};
 const CHAR_LIST = [
   {name:'에스코피에',elem:'cryo',star:5},
   {name:'종려',elem:'geo',star:5},
@@ -908,6 +1171,11 @@ const CHAR_LIST = [
   {name:'씨아오',elem:'anemo',star:5},
   {name:'야에 미코',elem:'electro',star:5},
   {name:'알하이탐',elem:'dendro',star:5},
+  {name:'라우마',elem:'dendro',star:5},
+  {name:'플린스',elem:'electro',star:5},
+  {name:'네페르',elem:'dendro',star:5},
+  {name:'두린',elem:'pyro',star:5},
+  {name:'콜롬비나',elem:'hydro',star:5},
   {name:'베넷',elem:'pyro',star:4},
   {name:'행추',elem:'hydro',star:4},
 ];

@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>원신 캐릭터 가이드</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f5f4f0; --surface:#fff; --surface2:#f0eeea;
+  --border:#e2dfd8; --border-strong:#c8c4bc;
+  --text:#1a1916; --sub:#6b6860; --muted:#a09d98;
+  --accent:#b8860b; --accent-bg:#fdf6e3; --accent-bd:#e8d5a0;
+  --blue:#3a6ea8; --blue-bg:#eef3fa;
+  --green:#3a7a4a; --green-bg:#eef6f0;
+  --red:#a03030; --red-bg:#fdf0f0;
+  --r:10px; --rs:6px;
+  --sh:0 1px 4px rgba(0,0,0,.06),0 2px 12px rgba(0,0,0,.04);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:14px;line-height:1.6;min-height:100vh}
+
+/* ─ API modal ─ */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:1000}
+.modal{background:#fff;border-radius:12px;padding:28px;width:400px;max-width:92vw;box-shadow:0 8px 40px rgba(0,0,0,.18)}
+.modal h2{font-size:17px;font-weight:700;color:var(--accent);margin-bottom:6px}
+.modal p{font-size:12.5px;color:var(--sub);line-height:1.7;margin-bottom:16px}
+.modal p a{color:var(--blue)}
+.modal input{width:100%;border:1px solid var(--border);border-radius:var(--rs);padding:9px 12px;font-family:inherit;font-size:13px;color:var(--text);outline:none;margin-bottom:10px}
+.modal input:focus{border-color:var(--accent-bd)}
+.modal-btns{display:flex;gap:8px}
+.btn-primary{flex:1;background:var(--accent);border:none;border-radius:var(--rs);color:#fff;font-family:inherit;font-size:13px;font-weight:600;padding:9px;cursor:pointer}
+.btn-primary:hover{opacity:.85}
+.api-err{color:var(--red);font-size:12px;margin-top:4px;display:none}
+
+/* ─ Layout ─ */
+.app{display:flex;height:100vh;overflow:hidden}
+
+/* ─ Sidebar ─ */
+.sidebar{width:230px;min-width:230px;background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.sb-head{padding:14px 14px 10px;border-bottom:1px solid var(--border)}
+.logo{font-size:15px;font-weight:700;color:var(--accent);display:flex;align-items:center;gap:6px}
+.logo-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.api-row{display:flex;align-items:center;gap:5px;margin-top:7px;cursor:pointer}
+.kdot{width:7px;height:7px;border-radius:50%;background:#ccc;flex-shrink:0}
+.kdot.on{background:#3a7a4a}
+.klabel{font-size:11px;color:var(--muted)}
+.sb-filter{padding:9px 10px;border-bottom:1px solid var(--border)}
+.sb-filter input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);padding:6px 10px;font-family:inherit;font-size:12.5px;color:var(--text);outline:none}
+.sb-filter input::placeholder{color:var(--muted)}
+.char-list{flex:1;overflow-y:auto;padding:6px 0 12px}
+.char-list::-webkit-scrollbar{width:4px}
+.char-list::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:4px}
+.grp-lbl{padding:8px 13px 3px;font-size:10.5px;font-weight:600;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.ci{display:flex;align-items:center;gap:8px;padding:6px 12px;cursor:pointer;position:relative;transition:background .1s}
+.ci:hover{background:var(--surface2)}
+.ci.active{background:var(--accent-bg);border-left:3px solid var(--accent)}
+.ci-thumb{width:34px;height:34px;border-radius:50%;object-fit:cover;object-position:top center;border:1px solid var(--border);flex-shrink:0;background:#eee}
+.ci-placeholder{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);flex-shrink:0;font-size:15px}
+.ci-info{flex:1;min-width:0}
+.ci-name{font-size:12.5px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ci.active .ci-name{color:var(--accent);font-weight:700}
+.ci-meta{font-size:10.5px;color:var(--muted);display:flex;align-items:center;gap:3px}
+.ep{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+
+/* ─ Main ─ */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{background:#fff;border-bottom:1px solid var(--border);height:50px;display:flex;align-items:center;padding:0 18px;gap:0;flex-shrink:0}
+.tb-search{display:flex;align-items:center;gap:7px;padding-right:16px;margin-right:16px;border-right:1px solid var(--border)}
+.tb-search input{background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);padding:6px 12px;font-family:inherit;font-size:13px;color:var(--text);width:190px;outline:none;transition:all .15s}
+.tb-search input:focus{border-color:var(--accent-bd);background:#fff}
+.tb-search input::placeholder{color:var(--muted)}
+.go-btn{background:var(--accent);border:none;border-radius:var(--rs);color:#fff;font-family:inherit;font-size:12.5px;font-weight:600;padding:6px 14px;cursor:pointer;white-space:nowrap}
+.go-btn:hover{opacity:.85}
+.go-btn:disabled{opacity:.4;cursor:not-allowed}
+.tabs{display:flex;overflow-x:auto}
+.tabs::-webkit-scrollbar{display:none}
+.tab{background:none;border:none;border-bottom:2px solid transparent;color:var(--sub);cursor:pointer;font-family:inherit;font-size:13px;font-weight:500;padding:0 12px;height:50px;white-space:nowrap;transition:color .15s,border-color .15s}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:700}
+
+/* ─ Content ─ */
+.content{flex:1;overflow-y:auto;padding:20px 22px 40px}
+.content::-webkit-scrollbar{width:6px}
+.content::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:4px}
+
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:70%;text-align:center;gap:10px}
+.empty-icon{font-size:2.8rem;opacity:.35}
+.empty-title{font-size:15px;font-weight:600;color:var(--sub)}
+.empty-desc{font-size:13px;color:var(--muted);line-height:1.7}
+
+/* Progress */
+.prog{display:none;flex-direction:column;align-items:center;justify-content:center;height:60%;gap:16px}
+.prog.show{display:flex}
+.prog-img{width:72px;height:72px;border-radius:50%;object-fit:cover;object-position:top;border:2px solid var(--accent-bd);animation:pulse-a 1.4s ease-in-out infinite}
+@keyframes pulse-a{0%,100%{opacity:.7;transform:scale(.97)}50%{opacity:1;transform:scale(1)}}
+.prog-name{font-size:15px;font-weight:700}
+.prog-pct{font-size:24px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums}
+.prog-bar-outer{width:260px;height:8px;background:var(--border);border-radius:4px;overflow:hidden}
+.prog-bar{height:100%;background:linear-gradient(90deg,var(--accent),#e8b040);border-radius:4px;transition:width .4s ease;width:0}
+.prog-step{font-size:12.5px;color:var(--muted);min-height:18px}
+
+/* Result */
+.result{display:none;animation:fadeUp .28s ease}
+.result.show{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* Char header */
+.ch-card{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:14px;box-shadow:var(--sh);display:flex;gap:16px;align-items:flex-start}
+.ch-img{width:84px;height:84px;border-radius:12px;object-fit:cover;object-position:top center;border:1px solid var(--border);flex-shrink:0;background:#eee}
+.ch-info{flex:1}
+.ch-name{font-size:20px;font-weight:700;letter-spacing:-.02em;margin-bottom:7px}
+.badges{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:9px}
+.badge{border-radius:4px;font-size:11.5px;font-weight:600;padding:3px 9px}
+.b-star{background:#fef8e6;color:#b8860b;border:1px solid #e8d580}
+.b-elem{background:var(--blue-bg);color:var(--blue);border:1px solid #c0d8f0}
+.b-weap{background:var(--surface2);color:var(--sub);border:1px solid var(--border)}
+.b-role{background:var(--green-bg);color:var(--green);border:1px solid #b8dfc0}
+.ch-desc{font-size:13px;color:var(--sub);line-height:1.7;border-top:1px solid var(--border);padding-top:9px}
+
+/* Update bar */
+.update-bar{display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);padding:7px 14px;margin-bottom:14px;font-size:12px;color:var(--muted)}
+.update-btn{background:transparent;border:1px solid var(--border);border-radius:4px;color:var(--sub);cursor:pointer;font-family:inherit;font-size:11.5px;padding:4px 10px;transition:all .15s}
+.update-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* Sections */
+.sections{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+@media(max-width:620px){.sections{grid-template-columns:1fr}}
+.section-card{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;box-shadow:var(--sh)}
+.section-card.full{grid-column:1/-1}
+.sec-title{font-size:12px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px;display:flex;align-items:center;gap:7px}
+.sec-title::before{content:'';width:3px;height:13px;background:var(--accent);border-radius:2px;flex-shrink:0}
+
+/* Tables */
+.tbl{width:100%;border-collapse:collapse;font-size:12.5px;border:1px solid var(--border);border-radius:var(--rs);overflow:hidden}
+.tbl th{background:var(--surface2);color:var(--sub);font-weight:600;font-size:11px;padding:7px 10px;text-align:left;border-bottom:1px solid var(--border);letter-spacing:.03em}
+.tbl td{padding:7px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:nth-child(even) td{background:var(--surface2)}
+.tbl td:first-child{color:var(--blue);font-weight:500}
+
+/* Image grids */
+.img-grid{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 6px}
+.img-card{display:flex;flex-direction:column;align-items:center;gap:5px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 10px;min-width:72px;max-width:96px}
+.img-card img{width:52px;height:52px;object-fit:contain;border-radius:4px}
+.img-card-lbl{font-size:10.5px;color:var(--sub);text-align:center;word-break:keep-all;line-height:1.3}
+
+/* Stat rows */
+.stat-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:7px;font-size:13px}
+.stat-key{color:var(--muted);font-size:12px;min-width:70px;flex-shrink:0;padding-top:1px}
+.stat-val{color:var(--text);flex:1;line-height:1.6}
+
+/* Party cards */
+.party-card{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:10px}
+.party-name{font-size:12px;font-weight:700;color:var(--accent);margin-bottom:8px}
+.party-chars{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.party-char{font-size:12.5px;font-weight:500;color:var(--blue);background:var(--blue-bg);border:1px solid #c0d8f0;border-radius:4px;padding:2px 8px}
+.party-note{font-size:12px;color:var(--sub)}
+
+/* Priority pills */
+.priority{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.prio-pill{background:var(--accent-bg);border:1px solid var(--accent-bd);border-radius:20px;font-size:12px;font-weight:600;color:var(--accent);padding:3px 10px;display:flex;align-items:center;gap:4px}
+.prio-num{background:var(--accent);color:#fff;border-radius:50%;width:16px;height:16px;font-size:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+/* Efficiency */
+.eff-box{background:var(--green-bg);border:1px solid #b8dfc0;border-radius:8px;padding:12px 14px;font-size:13px;color:var(--text);line-height:1.7}
+
+/* Error */
+.err-box{background:var(--red-bg);border:1px solid #f0c0c0;border-radius:var(--r);color:var(--red);font-size:13px;padding:14px 18px;display:none}
+.err-box.show{display:block}
+
+/* Spinner (update) */
+.spin{width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:sp .8s linear infinite;flex-shrink:0}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+@media(max-width:660px){.sidebar{display:none}.tb-search input{width:130px}}
+</style>
+</head>
+<body>
+
+<!-- API Modal -->
+<div class="overlay" id="apiOverlay">
+  <div class="modal">
+    <h2>⚔️ 원신 캐릭터 가이드</h2>
+    <p>
+      외부 실행 시 <strong>Anthropic API 키</strong>가 필요해요.<br>
+      <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a>에서 발급 가능.<br>
+      키는 이 브라우저에만 저장되며 서버로 전송되지 않아요.<br><br>
+      기본 데이터는 하드코딩되어 있어 토큰 절약. 업데이트 버튼 눌렀을 때만 AI가 검색해요.
+    </p>
+    <input type="password" id="apiInput" placeholder="sk-ant-api...">
+    <div class="api-err" id="apiErr">유효하지 않은 API 키 형식이에요.</div>
+    <div class="modal-btns">
+      <button class="btn-primary" onclick="saveKey()">저장하고 시작</button>
+    </div>
+  </div>
+</div>
+
+<div class="app">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sb-head">
+      <div class="logo">⚔️ 원신 가이드</div>
+      <div class="logo-sub">캐릭터 도감 · 공략</div>
+      <div class="api-row" onclick="resetKey()">
+        <span class="kdot" id="kdot"></span>
+        <span class="klabel" id="klabel">API 키 없음</span>
+      </div>
+    </div>
+    <div class="sb-filter">
+      <input type="text" id="filterIn" placeholder="캐릭터 필터..." oninput="filterList(this.value)">
+    </div>
+    <div class="char-list" id="charList"></div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="topbar">
+      <div class="tb-search">
+        <input type="text" id="mainIn" placeholder="캐릭터 직접 입력...">
+        <button class="go-btn" id="goBtn" onclick="doSearch()">검색</button>
+      </div>
+      <div class="tabs" id="tabs">
+        <button class="tab active" data-cat="all">전체</button>
+        <button class="tab" data-cat="ascension">돌파 재료</button>
+        <button class="tab" data-cat="talent">특성 재료</button>
+        <button class="tab" data-cat="build">세팅 가이드</button>
+        <button class="tab" data-cat="party">파티 구성</button>
+        <button class="tab" data-cat="efficiency">효율 분석</button>
+      </div>
+    </div>
+
+    <div class="content" id="contentArea">
+      <div class="empty" id="emptyState">
+        <div class="empty-icon">⚔️</div>
+        <div class="empty-title">캐릭터를 선택하거나 검색하세요</div>
+        <div class="empty-desc">왼쪽 목록 클릭 또는 위 검색창 입력</div>
+      </div>
+
+      <div class="prog" id="progWrap">
+        <img class="prog-img" id="progImg" src="" alt="">
+        <div class="prog-name" id="progName"></div>
+        <div class="prog-pct" id="progPct">0%</div>
+        <div class="prog-bar-outer"><div class="prog-bar" id="progBar"></div></div>
+        <div class="prog-step" id="progStep">준비 중...</div>
+      </div>
+
+      <div class="err-box" id="errBox"></div>
+      <div class="result" id="resultArea"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════
+//  데이터
+// ══════════════════════════════════════════════════
+const WIKI = 'https://genshin-impact.fandom.com/wiki/Special:FilePath/';
+
+const ELEM = {
+  cryo:    {label:'얼음', color:'#7eb8d4', icon:'❄'},
+  pyro:    {label:'불꽃', color:'#e07040', icon:'🔥'},
+  hydro:   {label:'물',   color:'#5090d0', icon:'💧'},
+  electro: {label:'번개', color:'#b060d0', icon:'⚡'},
+  anemo:   {label:'바람', color:'#50b090', icon:'🌀'},
+  geo:     {label:'바위', color:'#c8a030', icon:'⛰'},
+  dendro:  {label:'풀',   color:'#70b040', icon:'🌿'},
+};
+
+const MAT_IMG = {
+  '서늘한 빙옥 가루':'Shivada_Jade_Sliver','서늘한 빙옥 조각':'Shivada_Jade_Fragment',
+  '서늘한 빙옥 덩이':'Shivada_Jade_Chunk','서늘한 빙옥':'Shivada_Jade_Gemstone',
+  '염화 아게이트 가루':'Agnidus_Agate_Sliver','염화 아게이트 조각':'Agnidus_Agate_Fragment',
+  '염화 아게이트 덩이':'Agnidus_Agate_Chunk','염화 아게이트':'Agnidus_Agate_Gemstone',
+  '수류 청금석 가루':'Varunada_Lazurite_Sliver','수류 청금석 조각':'Varunada_Lazurite_Fragment',
+  '수류 청금석 덩이':'Varunada_Lazurite_Chunk','수류 청금석':'Varunada_Lazurite_Gemstone',
+  '번개 자수정 가루':'Vajrada_Amethyst_Sliver','번개 자수정 조각':'Vajrada_Amethyst_Fragment',
+  '번개 자수정 덩이':'Vajrada_Amethyst_Chunk','번개 자수정':'Vajrada_Amethyst_Gemstone',
+  '취록 비취 가루':'Vayuda_Turquoise_Sliver','취록 비취 조각':'Vayuda_Turquoise_Fragment',
+  '취록 비취 덩이':'Vayuda_Turquoise_Chunk','취록 비취':'Vayuda_Turquoise_Gemstone',
+  '대지 황수정 가루':'Prithiva_Topaz_Sliver','대지 황수정 조각':'Prithiva_Topaz_Fragment',
+  '대지 황수정 덩이':'Prithiva_Topaz_Chunk','대지 황수정':'Prithiva_Topaz_Gemstone',
+  '창성 녹화석 가루':'Nagadus_Emerald_Sliver','창성 녹화석 조각':'Nagadus_Emerald_Fragment',
+  '창성 녹화석 덩이':'Nagadus_Emerald_Chunk','창성 녹화석':'Nagadus_Emerald_Gemstone',
+  '비밀근원 분사구':'Gear','맞물림 톱니바퀴':'Gear',
+  '평톱니바퀴':'Mechanical_Spur_Gear','오토마톤 코어 톱니바퀴':'Artificed_Dynamic_Gear',
+  '푸른 수정 소라':'Sea_Ganoderma','진달래':'Cor_Lapis',
+  '전통 밀화':'Glaze_Lily','담경초':'Wolfhook',
+  '바다 이슬꽃':'Romaritime_Flower','루미두스 종':'Lumidouce_Bell',
+  '보라색 잣':'Sakura_Bloom','바다 배추':'Naku_Weed',
+  '아케소리아 열매':'Rukkhashava_Mushrooms','강철초':'Iron_Aster',
+  '영원한 불꽃 연꽃':'Beryl_Conch',
+  '여상의 혼':'Geo_Hypostasis','차가운 심장':'Hellfire_Butterfly',
+  '번영하는 태양의 눈':'Thunderbird_Talon','달맞이꽃의 꽃가루':'Evergloom_Ring',
+  '폭군의 갑옷 파편':'Tusk_of_Monoceros_Caeli','차가운 불빛':'Hellfire_Butterfly',
+  '가득한 물':'Dragonheir_False_Fin','부유하는 마법진':'Light_Guiding_Tetrahedron',
+  '변치 않는 뿔':'Mudra_of_the_Malefic_General','검은 영역의 거울':'Mirror_of_Mushin',
+  '끝없는 몽상':'Daaka_Bhutatathata','진홍 가지':'Bloodjade_Branch',
+  '짓밟힌 초상':'Worldspan_Fern','달빛 가시':'Moon_Piercer',
+  '멸화의 나비':'Lightless_Eye_of_the_Maelstrom',
+  '슬픔의 가면':'Puppet_Strings',
+  '녹슨 화살촉':'Firm_Arrowhead','뒤틀린 화살촉':'Sharp_Arrowhead','독이 묻은 화살촉':'Weathered_Arrowhead',
+  '쿠즈사군 흉장':'Old_Jade','엘리트 쿠즈사군 흉장':'Exquisite_Jade','직속 쿠즈사군 흉장':'Eerie_Instruction',
+  '레이선 가면':'Old_Mask','레이선 뿔':'Damaged_Prism','기이한 레이선 뿔':'Turbid_Prism','완전한 레이선 뿔':'Ley_Line_Sprout',
+  '재봉사 바늘':'Faded_Red_Satin','재봉사 실':'Trimmed_Red_Silk','재봉사 재단기':'Rich_Red_Brocade',
+  '슬라임 응결물':'Slime_Condensate','슬라임 분비물':'Slime_Secretions','슬라임 집중물':'Slime_Concentrate',
+  '안개꽃':'Fungal_Spores','안개꽃 가루':'Luminescent_Pollen','농축된 안개꽃 분말':'Crystalline_Cyst_Dust',
+  '성인 버드나무 씨앗':'Fungal_Spores','성숙한 버드나무 씨앗':'Luminescent_Pollen','완전한 버드나무 씨앗':'Crystalline_Cyst_Dust',
+  '낡은 뼈다귀':'Old_Bone','풍화된 뼈다귀':'Fragile_Bone_Shard','단단한 뼈다귀':'Sturdy_Bone_Shard',
+  '침식된 불꽃뿔':'Desiccated_Shell',
+  '번영의 가르침':'Teachings_of_Prosperity','번영의 인도':'Guide_to_Prosperity','번영의 철학':'Philosophies_of_Prosperity',
+  '자유의 가르침':'Teachings_of_Freedom','자유의 인도':'Guide_to_Freedom','자유의 철학':'Philosophies_of_Freedom',
+  '기억의 가르침':'Teachings_of_Ballad','기억의 인도':'Guide_to_Ballad','기억의 철학':'Philosophies_of_Ballad',
+  '덧없음의 가르침':'Teachings_of_Transience','덧없음의 인도':'Guide_to_Transience','덧없음의 철학':'Philosophies_of_Transience',
+  '우아함의 가르침':'Teachings_of_Elegance','우아함의 인도':'Guide_to_Elegance','우아함의 철학':'Philosophies_of_Elegance',
+  '빛의 가르침':'Teachings_of_Light','빛의 인도':'Guide_to_Light','빛의 철학':'Philosophies_of_Light',
+  '근면의 가르침':'Teachings_of_Diligence','근면의 인도':'Guide_to_Diligence','근면의 철학':'Philosophies_of_Diligence',
+  '망아의 가르침':'Teachings_of_Ballad','망아의 인도':'Guide_to_Ballad','망아의 철학':'Philosophies_of_Ballad',
+  '공평의 가르침':'Teachings_of_Justice','공평의 인도':'Guide_to_Justice','공평의 철학':'Philosophies_of_Justice',
+  '인내의 가르침':'Teachings_of_Ingenuity','인내의 인도':'Guide_to_Ingenuity','인내의 철학':'Philosophies_of_Ingenuity',
+  '순수의 가르침':'Teachings_of_Praxis','순수의 인도':'Guide_to_Praxis','순수의 철학':'Philosophies_of_Praxis',
+  '지식의 왕관':'Crown_of_Insight',
+};
+
+const WEAPON_IMG = {
+  '호마의 지팡이':'Staff_of_Homa','파죽':'Calamity_Queller','자몽검':'Primordial_Jade_Winged-Spear',
+  '증인의 창':'Staff_of_the_Scarlet_Sands','정토일여':'Engulfing_Lightning','천공의 척':'Skyward_Atlas',
+  '천공의 창':'Skyward_Spine','이정':'Freedom-Sworn','아모스의 활':'Amos%27_Bow',
+  '서리 칼날':'Polar_Star','헌터의 길':'Hunter%27s_Path','단죄의 검':'Mistsplitter_Reforged',
+  '백금의 칼날':'Light_of_Foliar_Incision','송뢰':'Thundering_Pulse','명판결':'Verdict',
+  '화염의 혀':'Beacon_of_the_Reed_Sea','긴 밤의 소고':'Tome_of_the_Eternal_Flow',
+  '돌이킬 수 없는 낙원':'Jadefall%27s_Splendor','기억나는 태고':'Memory_of_Dust',
+  '낙화':'Lumidouce_Elegy',
+  '희극':'The_Catch','단용창':'Deathmatch','원수의 장창':'Deathmatch',
+  '달빛을 향해 걸어요':'Moonpiercer','흑암의 칼날':'Blackcliff_Longsword',
+  '흑암의 활':'Blackcliff_Warbow','흑암의 대검':'Blackcliff_Slasher',
+  '밝은 달빛':'Lithic_Blade','페보니우스 검':'Favonius_Sword',
+  '희생의 검':'Sacrificial_Sword','희생의 법구':'Sacrificial_Fragments',
+  '해묵은 추억':'Wandering_Evenstar','창생의 에메랄드':'Toukabou_Shigure',
+  '파도 헤치기':'Surf%27s_Up','천암의 창':'Lithic_Spear','천암의 검':'Lithic_Blade',
+};
+
+const ARTIFACT_IMG = {
+  '절연의 기치':'Emblem_of_Severed_Fate','불꽃의 마녀':'Crimson_Witch_of_Flames',
+  '번개 같은 분노':'Thundering_Fury','떠돌이 음악가':'Viridescent_Venerer',
+  '천암 깊은 궁전':'Archaic_Petra','금박 꿈':'Gilded_Dreams',
+  '심해 종자':'Deepwood_Memories','꿈속의 꽃밭':'Flower_of_Paradise_Lost',
+  '황금 극단':'Golden_Troupe','검투사의 피날레':'Gladiator%27s_Finale',
+  '단단한 돌':'Tenacity_of_the_Millelith','청록 해원':'Ocean-Hued_Clam',
+  '용인의 옥':'Vermillion_Hereafter','현무 수의':'Nymph%27s_Dream',
+  '광채':'Unfinished_Reverie','마판 오프닝':'Marechaussee_Hunter',
+  '스크리아빈':'Obsidian_Codex','문명의 빛':'Fragment_of_Harmonic_Whimsy',
+  '이계의 유파':'Gilded_Dreams','칸나즈카 통곡':'Blizzard_Strayer',
+};
+
+const CHAR_DATA = {
+  '에스코피에':{elem:'cryo',star:5,weapon:'장병기',region:'폰타인',role:'메인 딜러',
+    desc:'폰타인 출신 전설의 요리사. 크라이오 장병기 캐릭터로 냉동 반응 활용에 특화.',
+    img:'Escoffier_Card',
+    ascension:{
+      gem:['서늘한 빙옥 가루','서늘한 빙옥 조각','서늘한 빙옥 덩이','서늘한 빙옥'],
+      gemSource:'얼음 나무 (무상의 얼음) / 합성대',
+      boss:'비밀근원 분사구',bossSource:'비밀근원 기계·통솔기 (수메루)',
+      local:'푸른 수정 소라',localSource:'살라키아 해저 평원 (폰타인)',
+      mob:['맞물림 톱니바퀴','평톱니바퀴','오토마톤 코어 톱니바퀴'],
+      mobSource:'태엽 장치 (수메루)',mora:2092530,xp:419,
+    },
+    talent:{
+      book:['정의의 가르침','정의의 인도','정의의 철학'],bookDays:'화·금·일 (숙달 비경: 규율)',
+      weekly:'침식된 불꽃뿔',weeklySource:'침식된 근원의 불꽃 주인 (나타)',crown:3,mora:4957500,
+    },
+    weapons:[
+      {name:'낙화',stars:5,note:'전용 무기. 빙옥 스택 시너지 최상'},
+      {name:'파죽',stars:5,note:'공격력 증가 + 스킬 데미지 강화'},
+      {name:'자몽검',stars:5,note:'크리티컬 스탯 확보 용이'},
+      {name:'증인의 창',stars:5,note:'원소 피해 보너스 + 원소 숙련 시너지'},
+    ],
+    artifacts:[
+      {name:'스크리아빈',note:'전용 성유물. 크라이오 보너스 + 얼음 반응 강화'},
+      {name:'광채',note:'대안 세트. 공속 버프 포함'},
+    ],
+    artifactStats:{sand:'공격력% / 원소 숙련',cup:'크라이오 원소 피해 보너스',crown:'치명타율 / 치명타 피해',sub:'치명타율 ≥ 치명타 피해 ≈ 공격력% ≥ 원소 숙련'},
+    talentPriority:['원소 폭발','원소 스킬','일반 공격'],
+    parties:[
+      {name:'고성능',chars:['에스코피에','종려','베넷','행추'],note:'냉동 유지 + 공격력 극대화'},
+      {name:'범용',chars:['에스코피에','씨아오','베넷','나히다'],note:'얼음·바람 소용돌이 조합'},
+      {name:'저과금',chars:['에스코피에','카에야','베넷','행추'],note:'4성 위주 냉동 파티'},
+    ],
+    efficiency:'고화력 크라이오 메인 딜러. 전용 무기 있을 때 최상위. 냉동/과부하 팀에 높은 가치.',
+  },
+  '종려':{elem:'geo',star:5,weapon:'장병기',region:'리월',role:'서포터 / 쉴더',
+    desc:'리월 전 암신. 원소력으로 강력한 보호막을 제공하는 전 메타 최상위 서포터.',
+    img:'Zhongli_Card',
+    ascension:{
+      gem:['대지 황수정 가루','대지 황수정 조각','대지 황수정 덩이','대지 황수정'],
+      gemSource:'리치보어 / 합성대',
+      boss:'여상의 혼',bossSource:'리치보어 (리월)',
+      local:'진달래',localSource:'쉬미산 일대 (리월)',
+      mob:['녹슨 화살촉','뒤틀린 화살촉','독이 묻은 화살촉'],
+      mobSource:'폭렬 슬라임, 전기 슬라임 (전역)',mora:2092530,xp:419,
+    },
+    talent:{
+      book:['번영의 가르침','번영의 인도','번영의 철학'],bookDays:'수·토·일 (상인 비경: 부)',
+      weekly:'폭군의 갑옷 파편',weeklySource:'제2대 성자 덩신 (리월)',crown:3,mora:4957500,
+    },
+    weapons:[
+      {name:'파죽',stars:5,note:'방어력 스택 + 쉴드 강화에 최적'},
+      {name:'호마의 지팡이',stars:5,note:'HP 기반 데미지 + 방어력 시너지'},
+      {name:'천암의 창',stars:4,note:'방어력 강화 + 파티 공격력 버프'},
+    ],
+    artifacts:[
+      {name:'단단한 돌',note:'파티 전체 HP 버프 + 쉴드 강화'},
+      {name:'검투사의 피날레',note:'서포터도 충분한 데미지'},
+    ],
+    artifactStats:{sand:'HP%',cup:'지오 원소 피해 보너스',crown:'HP%',sub:'HP% ≥ HP ≥ 치명타율'},
+    talentPriority:['원소 스킬','원소 폭발','일반 공격'],
+    parties:[
+      {name:'만능 방패',chars:['종려','후','베넷','행추'],note:'종려 쉴드 + 후 증발 파티'},
+      {name:'범용',chars:['종려','나비아','베넷','행추'],note:'방어 + 나비아 지오 딜'},
+      {name:'저과금',chars:['종려','카에야','행추','베넷'],note:'얼어붙기 + 종려 쉴드'},
+    ],
+    efficiency:'모든 파티에서 범용성 최상. 단독으로 최강 쉴드 제공. 필수 픽 캐릭터.',
+  },
+  '후':{elem:'pyro',star:5,weapon:'장병기',region:'리월',role:'메인 딜러',
+    desc:'왕생당 77대 당주. HP를 소모해 공격력 버프를 얻는 최강 불꽃 딜러.',
+    img:'Hu_Tao_Card',
+    ascension:{
+      gem:['염화 아게이트 가루','염화 아게이트 조각','염화 아게이트 덩이','염화 아게이트'],
+      gemSource:'불꽃 새 / 합성대',
+      boss:'차가운 심장',bossSource:'얼음 바람의 지배자 (드래곤스파인)',
+      local:'담경초',localSource:'리월 전역',
+      mob:['녹슨 화살촉','뒤틀린 화살촉','독이 묻은 화살촉'],
+      mobSource:'표류하는 영혼 (리월)',mora:2092530,xp:419,
+    },
+    talent:{
+      book:['망아의 가르침','망아의 인도','망아의 철학'],bookDays:'월·목·일 (망아의 비경)',
+      weekly:'진홍 가지',weeklySource:'로섹스 (스카르티아)',crown:3,mora:4957500,
+    },
+    weapons:[
+      {name:'호마의 지팡이',stars:5,note:'전용 무기. HP 기반 공격력 + 치명타 피해 최상'},
+      {name:'증인의 창',stars:5,note:'원소 숙련 기반 증발 최적화'},
+      {name:'파죽',stars:5,note:'전체 공격력 기반'},
+      {name:'단용창',stars:4,note:'크리 확률 + HP 기반 시너지'},
+    ],
+    artifacts:[
+      {name:'불꽃의 마녀',note:'증발 반응 최대화 (전통 빌드)'},
+      {name:'이계의 유파',note:'폭발 데미지 최적화'},
+    ],
+    artifactStats:{sand:'HP%',cup:'불꽃 원소 피해 보너스',crown:'치명타율 / 치명타 피해',sub:'치명타 피해 ≥ 치명타율 ≥ HP% ≥ HP'},
+    talentPriority:['원소 스킬','원소 폭발','일반 공격'],
+    parties:[
+      {name:'증발 최강',chars:['후','행추','베넷','종려'],note:'증발 반응 극대화'},
+      {name:'냉동 증발',chars:['후','행추','카즈하','베넷'],note:'소용돌이 버프 + 증발'},
+      {name:'저과금',chars:['후','행추','베넷','카에야'],note:'행추 물 지속 + 증발'},
+    ],
+    efficiency:'최상위 불꽃 딜러. 증발 팀에서 압도적. 조작 숙련 시 최강.',
+  },
+  '푸리나':{elem:'hydro',star:5,weapon:'단검',region:'폰타인',role:'서포터',
+    desc:'폰타인 수신. 파티 HP 변화로 폭발 강화. 현 메타 최상위 서포터.',
+    img:'Furina_Card',
+    ascension:{
+      gem:['수류 청금석 가루','수류 청금석 조각','수류 청금석 덩이','수류 청금석'],
+      gemSource:'극락 조개 / 합성대',
+      boss:'가득한 물',bossSource:'수정 비상어 (폰타인)',
+      local:'바다 이슬꽃',localSource:'폰타인 해안',
+      mob:['쿠즈사군 흉장','엘리트 쿠즈사군 흉장','직속 쿠즈사군 흉장'],
+      mobSource:'쿠즈사군 (이나즈마)',mora:2092530,xp:419,
+    },
+    talent:{
+      book:['공평의 가르침','공평의 인도','공평의 철학'],bookDays:'화·금·일 (숙달 비경: 규율)',
+      weekly:'부유하는 마법진',weeklySource:'폰타인 주간 보스',crown:3,mora:4957500,
+    },
+    weapons:[
+      {name:'긴 밤의 소고',stars:5,note:'전용 무기. HP 기반 + 폰타인 특화'},
+      {name:'희극',stars:4,note:'에너지 충전 최상'},
+      {name:'희생의 검',stars:4,note:'스킬 재사용 대기 감소'},
+    ],
+    artifacts:[
+      {name:'황금 극단',note:'폭발 데미지 최대화'},
+      {name:'현무 수의',note:'물 원소 피해 강화 + 힐 시너지'},
+    ],
+    artifactStats:{sand:'HP%',cup:'물 원소 피해 보너스',crown:'치명타율 / 치명타 피해',sub:'HP% ≥ 치명타율 ≥ 치명타 피해 ≥ 에너지 충전 효율'},
+    talentPriority:['원소 폭발','원소 스킬','일반 공격'],
+    parties:[
+      {name:'국민 파티+',chars:['푸리나','느비예트','카즈하','베넷'],note:'최고 성능 물 원소 파티'},
+      {name:'범용 물 파티',chars:['푸리나','종려','카즈하','베넷'],note:'쉴드 + 소용돌이 + 폭발'},
+      {name:'저과금',chars:['푸리나','행추','베넷','카에야'],note:'4성 위주 물 원소 지속'},
+    ],
+    efficiency:'현 메타 최상위 서포터. 모든 팀 구성에서 필수급. 필수 뽑기 대상.',
+  },
+  '라이덴 쇼군':{elem:'electro',star:5,weapon:'장병기',region:'이나즈마',role:'메인 딜러 / 배터리',
+    desc:'이나즈마 신. 파티 에너지 충전 + 강력한 번개 딜러. 배터리+딜러 겸직.',
+    img:'Raiden_Shogun_Card',
+    ascension:{
+      gem:['번개 자수정 가루','번개 자수정 조각','번개 자수정 덩이','번개 자수정'],
+      gemSource:'천수 / 합성대',
+      boss:'번영하는 태양의 눈',bossSource:'이나즈마 해역 보스',
+      local:'보라색 잣',localSource:'이나즈마 전역',
+      mob:['쿠즈사군 흉장','엘리트 쿠즈사군 흉장','직속 쿠즈사군 흉장'],
+      mobSource:'쿠즈사군 (이나즈마)',mora:2092530,xp:419,
+    },
+    talent:{
+      book:['빛의 가르침','빛의 인도','빛의 철학'],bookDays:'화·금·일 (빛의 교리 비경)',
+      weekly:'변치 않는 뿔',weeklySource:'마신의 장군 모미지 (이나즈마)',crown:3,mora:4957500,
+    },
+    weapons:[
+      {name:'정토일여',stars:5,note:'전용 무기. 에너지 충전 기반 극대화'},
+      {name:'천공의 창',stars:5,note:'에너지 + 공격력 시너지'},
+      {name:'희극',stars:4,note:'에너지 충전 효율 최상 4성'},
+    ],
+    artifacts:[
+      {name:'절연의 기치',note:'에너지 충전 기반 폭발 최대화'},
+      {name:'번개 같은 분노',note:'번개 반응 강화'},
+    ],
+    artifactStats:{sand:'에너지 충전 효율',cup:'번개 원소 피해 보너스',crown:'치명타율 / 치명타 피해',sub:'에너지 충전 효율 (200%까지) ≥ 치명타율 ≥ 치명타 피해'},
+    talentPriority:['원소 폭발','원소 스킬','일반 공격'],
+    parties:[
+      {name:'국민 파티',chars:['라이덴 쇼군','베넷','카즈하','행추'],note:'에너지 + 소용돌이 + 증발'},
+      {name:'하이퍼 캐리',chars:['라이덴 쇼군','카쿠','야에 미코','베넷'],note:'전기 집중'},
+      {name:'저과금',chars:['라이덴 쇼군','피슬','베넷','카즈하'],note:'번개·불꽃 과부하'},
+    ],
+    efficiency:'배터리+딜러 최고. 절연 + 정토일여 시 최상위. 모든 팀에서 에너지 기여.',
+  },
+  '카즈하':{elem:'anemo',star:5,weapon:'단검',region:'이나즈마',role:'서포터 / 버퍼',
+    desc:'이나즈마 유랑인. 소용돌이로 적 원소 저항 감소 + 파티 원소 피해 강화 최상위 서포터.',
+    img:'Kaedehara_Kazuha_Card',
+    ascension:{
+      gem:['취록 비취 가루','취록 비취 조각','취록 비취 덩이','취록 비취'],
+      gemSource:'비구름 새 / 합성대',
+      boss:'고대 귀족 가면',bossSource:'금박 왕 / 고대 귀족 살상기계 (리월)',
+      local:'바다 배추',localSource:'이나즈마 해안가',
+      mob:['낡은 뼈다귀','풍화된 뼈다귀','단단한 뼈다귀'],
+      mobSource:'폭렬 슬라임 (전역)',mora:2092530,xp:419,
+    },
+    talent:{
+      book:['덧없음의 가르침','덧없음의 인도','덧없음의 철학'],bookDays:'월·목·일 (덧없음의 비경)',
+      weekly:'검은 영역의 거울',weeklySource:'심연 사도 (이나즈마)',crown:3,mora:4957500,
+    },
+    weapons:[
+      {name:'이정',stars:5,note:'원소 숙련 최대화. 소용돌이 버프 극대화'},
+      {name:'달빛을 향해 걸어요',stars:4,note:'원소 숙련 기반 최고 4성'},
+      {name:'창생의 에메랄드',stars:4,note:'파티 원소 피해 추가 강화'},
+    ],
+    artifacts:[
+      {name:'떠돌이 음악가',note:'소용돌이 시 적 원소 저항 40% 감소 (핵심)'},
+      {name:'금박 꿈',note:'원소 숙련 최대화로 버프 증가'},
+    ],
+    artifactStats:{sand:'원소 숙련',cup:'원소 숙련',crown:'원소 숙련',sub:'원소 숙련 최대화 ≥ HP% ≥ 에너지 충전 효율'},
+    talentPriority:['원소 스킬','원소 폭발','일반 공격'],
+    parties:[
+      {name:'증발 팀',chars:['카즈하','후','행추','베넷'],note:'소용돌이 + 불꽃 저항 감소'},
+      {name:'냉동 팀',chars:['카즈하','에이미야','행추','종려'],note:'얼어붙기 + 소용돌이'},
+      {name:'국제 팀',chars:['카즈하','라이덴 쇼군','베넷','행추'],note:'만능 소용돌이'},
+    ],
+    efficiency:'최상위 서포터. 원소 숙련 기반 버프는 모든 딜러와 시너지. 필수급.',
+  },
+  '나히다':{elem:'dendro',star:5,weapon:'법구',region:'수메루',role:'서포터 / 서브 딜러',
+    desc:'수메루 신 초화. 풀 원소 반응 핵심. 원소 스킬로 광범위한 풀 원소 지속 부착.',
+    img:'Nahida_Card',
+    ascension:{
+      gem:['창성 녹화석 가루','창성 녹화석 조각','창성 녹화석 덩이','창성 녹화석'],
+      gemSource:'거대 약초 새 / 합성대',
+      boss:'짓밟힌 초상',bossSource:'오염된 낙원의 가수 (수메루)',
+      local:'아케소리아 열매',localSource:'수메루 전역',
+      mob:['안개꽃','안개꽃 가루','농축된 안개꽃 분말'],
+      mobSource:'균사체 (수메루)',mora:2092530,xp:419,
+    },
+    talent:{
+      book:['근면의 가르침','근면의 인도','근면의 철학'],bookDays:'화·금·일 (근면의 비경)',
+      weekly:'달맞이꽃의 꽃가루',weeklySource:'왕자의 목 잘린 말 (수메루)',crown:3,mora:4957500,
+    },
+    weapons:[
+      {name:'기억나는 태고',stars:5,note:'원소 숙련 최대화'},
+      {name:'천공의 척',stars:5,note:'원소 숙련 + 안정적 성능'},
+      {name:'해묵은 추억',stars:4,note:'원소 숙련 4성 최강'},
+      {name:'희생의 법구',stars:4,note:'스킬 재쿨 감소'},
+    ],
+    artifacts:[
+      {name:'심해 종자',note:'팀 전체 풀 원소 데미지 버프'},
+      {name:'금박 꿈',note:'원소 숙련 + 공격력 강화'},
+    ],
+    artifactStats:{sand:'원소 숙련',cup:'풀 원소 피해 보너스',crown:'치명타율 / 원소 숙련',sub:'원소 숙련 ≥ 치명타율 ≥ 치명타 피해'},
+    talentPriority:['원소 스킬','원소 폭발','일반 공격'],
+    parties:[
+      {name:'만개 팀',chars:['나히다','라이덴 쇼군','행추','베넷'],note:'전기·물·풀 만개 극대화'},
+      {name:'개화 팀',chars:['나히다','행추','카즈하','베넷'],note:'풀·물 개화 + 소용돌이'},
+      {name:'저과금',chars:['나히다','콜레이','행추','피슬'],note:'4성 위주 만개'},
+    ],
+    efficiency:'풀 원소 핵심. 만개/개화 팀 필수. 돌파 없어도 최상위.',
+  },
+  '감유':{elem:'cryo',star:5,weapon:'활',region:'리월',role:'메인 딜러',
+    desc:'선 기사단 경비대. 충전 공격으로 단일 대상 최고 딜. 최상위 크라이오 딜러.',
+    img:'Ganyu_Card',
+    ascension:{
+      gem:['서늘한 빙옥 가루','서늘한 빙옥 조각','서늘한 빙옥 덩이','서늘한 빙옥'],
+      gemSource:'얼음 나무 / 합성대',
+      boss:'차가운 불빛',bossSource:'얼음 바람의 지배자 (드래곤스파인)',
+      local:'전통 밀화',localSource:'리월 전역',
+      mob:['녹슨 화살촉','뒤틀린 화살촉','독이 묻은 화살촉'],
+      mobSource:'표류하는 영혼 (리월)',mora:2092530,xp:419,
+    },
+    talent:{
+      book:['번영의 가르침','번영의 인도','번영의 철학'],bookDays:'수·토·일 (상인 비경: 부)',
+      weekly:'차가운 심장',weeklySource:'얼음 바람의 지배자',crown:3,mora:4957500,
+    },
+    weapons:[
+      {name:'아모스의 활',stars:5,note:'충전 공격 극대화'},
+      {name:'서리 칼날',stars:5,note:'치명타율 + 상시 버프'},
+      {name:'헌터의 길',stars:5,note:'원소 숙련 + 치명타 피해'},
+      {name:'흑암의 활',stars:4,note:'치명타 피해 최상 4성'},
+    ],
+    artifacts:[
+      {name:'칸나즈카 통곡',note:'냉동 유지 시 충전 공격 최강'},
+      {name:'불꽃의 마녀',note:'증발 감유 빌드 (베넷 필요)'},
+    ],
+    artifactStats:{sand:'공격력%',cup:'크라이오 원소 피해 보너스',crown:'치명타율 / 치명타 피해',sub:'치명타율 ≥ 치명타 피해 ≥ 공격력%'},
+    talentPriority:['충전 공격','원소 폭발','원소 스킬'],
+    parties:[
+      {name:'냉동 팀',chars:['감유','행추','베넷','카즈하'],note:'냉동 + 소용돌이 + 증발'},
+      {name:'쌍얼음',chars:['감유','디오나','베넷','행추'],note:'크라이오 공명 + 냉동'},
+      {name:'저과금',chars:['감유','카에야','행추','베넷'],note:'4성 위주 냉동'},
+    ],
+    efficiency:'충전 공격 기반 단일 최고 딜. 냉동 팀에서 절대적. 조작 단순해 진입 장벽 낮음.',
+  },
+  '나비아':{elem:'geo',star:5,weapon:'대검',region:'폰타인',role:'메인 딜러',
+    desc:'폰타인 결정 단 단장. 크리스탈화 파편으로 강력한 산탄 스킬을 발동하는 지오 딜러.',
+    img:'Navia_Card',
+    ascension:{
+      gem:['대지 황수정 가루','대지 황수정 조각','대지 황수정 덩이','대지 황수정'],
+      gemSource:'리치보어 / 합성대',
+      boss:'달빛 가시',bossSource:'폰타인 보스',
+      local:'루미두스 종',localSource:'폰타인 전역',
+      mob:['재봉사 바늘','재봉사 실','재봉사 재단기'],
+      mobSource:'인형 재봉사 (폰타인)',mora:2092530,xp:419,
+    },
+    talent:{
+      book:['공평의 가르침','공평의 인도','공평의 철학'],bookDays:'화·금·일 (숙달 비경: 규율)',
+      weekly:'달빛 가시',weeklySource:'폰타인 주간 보스',crown:3,mora:4957500,
+    },
+    weapons:[
+      {name:'명판결',stars:5,note:'전용 무기. 크리스탈화 파편 시너지 최상'},
+      {name:'파도 헤치기',stars:5,note:'공격력 + 크리 딜'},
+      {name:'흑암의 대검',stars:4,note:'치명타 피해 최고 4성'},
+    ],
+    artifacts:[
+      {name:'황금 극단',note:'지오 극대화 + 크리스탈화 버프'},
+      {name:'문명의 빛',note:'나비아 전용. 스킬 데미지 극대화'},
+    ],
+    artifactStats:{sand:'공격력%',cup:'지오 원소 피해 보너스',crown:'치명타율 / 치명타 피해',sub:'치명타율 ≥ 치명타 피해 ≥ 공격력%'},
+    talentPriority:['원소 스킬','원소 폭발','일반 공격'],
+    parties:[
+      {name:'지오 파티',chars:['나비아','종려','고로','베넷'],note:'지오 공명 + 쉴드 + 딜'},
+      {name:'크리스탈화',chars:['나비아','종려','라이덴 쇼군','베넷'],note:'크리스탈화 파편 극대화'},
+      {name:'저과금',chars:['나비아','종려','피슬','베넷'],note:'4성 위주 지오'},
+    ],
+    efficiency:'크리스탈화 특화 지오 최강 딜러. 전용 무기와 성유물 시 최강.',
+  },
+  '느비예트':{elem:'hydro',star:5,weapon:'법구',region:'폰타인',role:'메인 딜러',
+    desc:'폰타인 심판장. 충전 공격으로 전방 훑는 독특한 딜링. 단일 최강 물 딜러.',
+    img:'Neuvillette_Card',
+    ascension:{
+      gem:['수류 청금석 가루','수류 청금석 조각','수류 청금석 덩이','수류 청금석'],
+      gemSource:'극락 조개 / 합성대',
+      boss:'달맞이꽃의 꽃가루',bossSource:'이끼 덮인 돌 (수메루)',
+      local:'바다 이슬꽃',localSource:'폰타인 해안',
+      mob:['재봉사 바늘','재봉사 실','재봉사 재단기'],
+      mobSource:'인형 재봉사 (폰타인)',mora:2092530,xp:419,
+    },
+    talent:{
+      book:['공평의 가르침','공평의 인도','공평의 철학'],bookDays:'화·금·일 (숙달 비경: 규율)',
+      weekly:'부유하는 마법진',weeklySource:'폰타인 주간 보스',crown:3,mora:4957500,
+    },
+    weapons:[
+      {name:'긴 밤의 소고',stars:5,note:'전용 무기. HP 기반 최강'},
+      {name:'돌이킬 수 없는 낙원',stars:5,note:'원소 숙련 + 충전 공격 강화'},
+      {name:'달빛을 향해 걸어요',stars:4,note:'원소 숙련 기반 4성 최선택'},
+    ],
+    artifacts:[
+      {name:'광채',note:'충전 공격 + 공속 강화'},
+      {name:'마판 오프닝',note:'충전 공격 및 일반 공격 극대화'},
+    ],
+    artifactStats:{sand:'HP%',cup:'물 원소 피해 보너스',crown:'치명타율 / 치명타 피해',sub:'치명타율 ≥ 치명타 피해 ≥ HP%'},
+    talentPriority:['충전 공격','원소 폭발','원소 스킬'],
+    parties:[
+      {name:'냉동 팀',chars:['느비예트','푸리나','카즈하','라오란'],note:'냉동 유지 + 폭발 버프'},
+      {name:'물 파티',chars:['느비예트','푸리나','카즈하','베넷'],note:'물 집중 + 소용돌이'},
+      {name:'저과금',chars:['느비예트','행추','카즈하','베넷'],note:'4성 위주 물 파티'},
+    ],
+    efficiency:'충전 공격 기반 물 원소 최강 딜러. 마스터 시 최상위.',
+  },
+  '아를레키노':{elem:'pyro',star:5,weapon:'장병기',region:'스카르티아',role:'메인 딜러',
+    desc:'파테이논 제4집행관. HP 소모로 강화되는 불꽃 창 딜러. 자가 힐 + 강력한 일반 공격.',
+    img:'Arlecchino_Card',
+    ascension:{
+      gem:['염화 아게이트 가루','염화 아게이트 조각','염화 아게이트 덩이','염화 아게이트'],
+      gemSource:'불꽃 새 / 합성대',
+      boss:'멸화의 나비',bossSource:'왕겨의 불꽃 나비 (스카르티아)',
+      local:'영원한 불꽃 연꽃',localSource:'스카르티아 전역',
+      mob:['재봉사 바늘','재봉사 실','재봉사 재단기'],
+      mobSource:'인형 재봉사 (폰타인)',mora:2092530,xp:419,
+    },
+    talent:{
+      book:['순수의 가르침','순수의 인도','순수의 철학'],bookDays:'화·금·일 (숙달 비경: 규율)',
+      weekly:'차가운 불빛',weeklySource:'얼음 바람의 지배자',crown:3,mora:4957500,
+    },
+    weapons:[
+      {name:'화염의 혀',stars:5,note:'전용 무기. HP 기반 최강 시너지'},
+      {name:'호마의 지팡이',stars:5,note:'HP 기반 공격력 버프'},
+      {name:'파죽',stars:5,note:'전체 공격력 버프'},
+      {name:'단용창',stars:4,note:'HP 소모 시 공격력 증가 시너지'},
+    ],
+    artifacts:[
+      {name:'불꽃의 마녀',note:'불꽃 원소 피해 + 증발 강화'},
+      {name:'광채',note:'공속 + 일반 공격 강화'},
+    ],
+    artifactStats:{sand:'HP% / 공격력%',cup:'불꽃 원소 피해 보너스',crown:'치명타율 / 치명타 피해',sub:'치명타율 ≥ 치명타 피해 ≥ HP%'},
+    talentPriority:['일반 공격','원소 스킬','원소 폭발'],
+    parties:[
+      {name:'증발 팀',chars:['아를레키노','행추','카즈하','베넷'],note:'증발 + 소용돌이 극대화'},
+      {name:'불꽃 팀',chars:['아를레키노','종려','베넷','카즈하'],note:'쉴드 + 불꽃 집중'},
+      {name:'저과금',chars:['아를레키노','행추','베넷','카에야'],note:'행추 물 지속 + 증발'},
+    ],
+    efficiency:'현 메타 불꽃 딜러 최상위. 자가 힐로 생존력 높음. 전용 무기 없어도 강력.',
+  },
+  '씨아오':{elem:'anemo',star:5,weapon:'장병기',region:'리월',role:'메인 딜러',
+    desc:'리월 5야叉. 폭발로 변신해 강력한 도약 공격. 바람 원소 최강 딜러.',
+    img:'Xiao_Card',
+    ascension:{
+      gem:['취록 비취 가루','취록 비취 조각','취록 비취 덩이','취록 비취'],
+      gemSource:'비구름 새 / 합성대',
+      boss:'여상의 혼',bossSource:'리치보어 (리월)',
+      local:'전통 밀화',localSource:'리월 전역',
+      mob:['슬라임 응결물','슬라임 분비물','슬라임 집중물'],
+      mobSource:'슬라임 (전역)',mora:2092530,xp:419,
+    },
+    talent:{
+      book:['번영의 가르침','번영의 인도','번영의 철학'],bookDays:'수·토·일 (상인 비경: 부)',
+      weekly:'슬픔의 가면',weeklySource:'리월 주간 보스',crown:3,mora:4957500,
+    },
+    weapons:[
+      {name:'자몽검',stars:5,note:'전용 무기. 공중 공격 최강'},
+      {name:'천공의 창',stars:5,note:'안정적 공격력 + 에너지'},
+      {name:'파죽',stars:5,note:'전체 공격력 버프'},
+      {name:'원수의 장창',stars:4,note:'크리 확률 + 클리어 보너스'},
+    ],
+    artifacts:[
+      {name:'용인의 옥',note:'씨아오 전용. 폭발 후 바람 강화'},
+      {name:'검투사의 피날레',note:'일반·충전 공격 강화'},
+    ],
+    artifactStats:{sand:'공격력%',cup:'바람 원소 피해 보너스',crown:'치명타율 / 치명타 피해',sub:'치명타율 ≥ 치명타 피해 ≥ 공격력%'},
+    talentPriority:['원소 폭발','일반 공격','원소 스킬'],
+    parties:[
+      {name:'씨아오 팀',chars:['씨아오','베넷','종려','파루잔'],note:'쉴드 + 바람 저항 감소 + 힐'},
+      {name:'범용',chars:['씨아오','베넷','종려','행추'],note:'안정적 서포트'},
+      {name:'저과금',chars:['씨아오','베넷','디오나','파루잔'],note:'4성 위주 바람'},
+    ],
+    efficiency:'바람 원소 최강 딜러. 수직 공간 + 범위 딜 특화. 숙련 시 매우 강력.',
+  },
+  '야에 미코':{elem:'electro',star:5,weapon:'법구',region:'이나즈마',role:'서브 딜러',
+    desc:'이나즈마 사쿠라 신사 신관. 설치형 토리이로 지속 번개 피해. 서브 딜러 최강급.',
+    img:'Yae_Miko_Card',
+    ascension:{
+      gem:['번개 자수정 가루','번개 자수정 조각','번개 자수정 덩이','번개 자수정'],
+      gemSource:'천수 / 합성대',
+      boss:'끝없는 몽상',bossSource:'이나즈마 보스',
+      local:'바다 배추',localSource:'이나즈마 해안가',
+      mob:['레이선 가면','레이선 뿔','기이한 레이선 뿔','완전한 레이선 뿔'],
+      mobSource:'레이선 (이나즈마)',mora:2092530,xp:419,
+    },
+    talent:{
+      book:['빛의 가르침','빛의 인도','빛의 철학'],bookDays:'화·금·일 (빛의 교리 비경)',
+      weekly:'변치 않는 뿔',weeklySource:'마신의 장군 모미지 (이나즈마)',crown:3,mora:4957500,
+    },
+    weapons:[
+      {name:'정토일여',stars:5,note:'에너지 충전 + 번개 딜'},
+      {name:'송뢰',stars:5,note:'치명타 피해 + 번개 강화'},
+      {name:'천공의 척',stars:5,note:'안정적 법구'},
+      {name:'달빛을 향해 걸어요',stars:4,note:'원소 숙련 기반 반응 강화'},
+    ],
+    artifacts:[
+      {name:'황금 극단',note:'번개 딜 최대화'},
+      {name:'번개 같은 분노',note:'번개 반응 강화'},
+    ],
+    artifactStats:{sand:'공격력%',cup:'번개 원소 피해 보너스',crown:'치명타율 / 치명타 피해',sub:'치명타율 ≥ 치명타 피해 ≥ 공격력% ≥ 에너지 충전 효율'},
+    talentPriority:['원소 스킬','원소 폭발','일반 공격'],
+    parties:[
+      {name:'하이퍼 캐리',chars:['야에 미코','라이덴 쇼군','베넷','카즈하'],note:'번개 집중 + 과부하'},
+      {name:'만개 팀',chars:['야에 미코','나히다','행추','베넷'],note:'전기·풀·물 만개'},
+      {name:'저과금',chars:['야에 미코','피슬','베넷','행추'],note:'4성 위주 번개'},
+    ],
+    efficiency:'설치 후 자유 운용. 만개/격화 팀 최상위 서브 딜러.',
+  },
+  '알하이탐':{elem:'dendro',star:5,weapon:'단검',region:'수메루',role:'메인 딜러',
+    desc:'수메루 현명원 서기장. 격화 반응으로 풀 원소 최강 딜러.',
+    img:'Alhaitham_Card',
+    ascension:{
+      gem:['창성 녹화석 가루','창성 녹화석 조각','창성 녹화석 덩이','창성 녹화석'],
+      gemSource:'거대 약초 새 / 합성대',
+      boss:'달맞이꽃의 꽃가루',bossSource:'이끼 덮인 돌 (수메루)',
+      local:'강철초',localSource:'수메루 사막',
+      mob:['성인 버드나무 씨앗','성숙한 버드나무 씨앗','완전한 버드나무 씨앗'],
+      mobSource:'숲속 정령 (수메루)',mora:2092530,xp:419,
+    },
+    talent:{
+      book:['인내의 가르침','인내의 인도','인내의 철학'],bookDays:'월·목·일 (인내의 비경)',
+      weekly:'짓밟힌 초상',weeklySource:'오염된 낙원의 가수 (수메루)',crown:3,mora:4957500,
+    },
+    weapons:[
+      {name:'백금의 칼날',stars:5,note:'전용 무기. 원소 숙련 + 격화 극대화'},
+      {name:'단죄의 검',stars:5,note:'치명타 피해 + 강력한 딜'},
+      {name:'밝은 달빛',stars:4,note:'원소 숙련 + 격화 반응 강화'},
+    ],
+    artifacts:[
+      {name:'꿈속의 꽃밭',note:'격화 반응 강화 전용 세트'},
+      {name:'금박 꿈',note:'원소 숙련 + 공격력 강화'},
+    ],
+    artifactStats:{sand:'원소 숙련',cup:'풀 원소 피해 보너스',crown:'치명타율 / 치명타 피해',sub:'원소 숙련 ≥ 치명타율 ≥ 치명타 피해'},
+    talentPriority:['원소 스킬','원소 폭발','일반 공격'],
+    parties:[
+      {name:'격화 팀',chars:['알하이탐','야에 미코','나히다','베넷'],note:'격화 극대화'},
+      {name:'만개 팀',chars:['알하이탐','나히다','행추','카즈하'],note:'만개 + 소용돌이'},
+      {name:'저과금',chars:['알하이탐','콜레이','피슬','나히다'],note:'4성 위주 격화'},
+    ],
+    efficiency:'현 메타 풀 원소 최강 딜러. 격화 팀 최상위. 전용 무기 없어도 충분히 강력.',
+  },
+  // 4성
+  '베넷':{elem:'pyro',star:4,weapon:'단검',region:'몬드',role:'서포터 / 힐러',
+    desc:'모험가 협회 소속. 불운하지만 파티 전체 공격력 버프와 강력한 힐을 제공. 메타 최상위 서포터.',
+    img:'Bennett_Card',
+    ascension:{
+      gem:['염화 아게이트 가루','염화 아게이트 조각','염화 아게이트 덩이','염화 아게이트'],
+      gemSource:'불꽃 새 / 합성대',
+      boss:'차가운 심장',bossSource:'얼음 바람의 지배자',
+      local:'황금빛 체리',localSource:'몬드 전역',
+      mob:['파우더 가루','봉인 두루마리','금지된 두루마리'],
+      mobSource:'마법사 (전역)',mora:2092530,xp:419,
+    },
+    talent:{
+      book:['저항의 가르침','저항의 인도','저항의 철학'],bookDays:'화·금·일 (몬드 저항의 비경)',
+      weekly:'풍룡의 이빨',weeklySource:'폭풍의 눈 드발린 (몬드)',crown:3,mora:4957500,
+    },
+    weapons:[
+      {name:'자유의 맹세',stars:5,note:'공격력 + 원소 반응 강화'},
+      {name:'페보니우스 검',stars:4,note:'에너지 충전 최상'},
+      {name:'희생의 검',stars:4,note:'스킬 재쿨 감소'},
+    ],
+    artifacts:[
+      {name:'불꽃의 마녀',note:'불꽃 원소 강화 + 에너지'},
+      {name:'단단한 돌',note:'파티 버프 강화'},
+    ],
+    artifactStats:{sand:'에너지 충전 효율',cup:'불꽃 원소 피해 보너스',crown:'치명타율',sub:'에너지 충전 효율 ≥ HP% ≥ 치명타율'},
+    talentPriority:['원소 폭발','원소 스킬','일반 공격'],
+    parties:[
+      {name:'만능 불꽃',chars:['베넷','후','행추','카즈하'],note:'불꽃 파티 핵심 서포터'},
+      {name:'국민 파티',chars:['베넷','감유','행추','카즈하'],note:'범용 최강 파티'},
+      {name:'저과금',chars:['베넷','에이미야','행추','카에야'],note:'4성 위주 범용'},
+    ],
+    efficiency:'4성 중 최상위. 모든 파티의 필수 서포터. HP 기반 힐 + 공격력 버프 독보적.',
+  },
+  '행추':{elem:'hydro',star:4,weapon:'단검',region:'리월',role:'서브 딜러 / 서포터',
+    desc:'페이윤 상회 차남. 원소 폭발로 지속적인 물 원소 부착. 최고의 물 원소 서브 딜러.',
+    img:'Xingqiu_Card',
+    ascension:{
+      gem:['수류 청금석 가루','수류 청금석 조각','수류 청금석 덩이','수류 청금석'],
+      gemSource:'극락 조개 / 합성대',
+      boss:'차가운 심장',bossSource:'얼음 바람의 지배자',
+      local:'전통 밀화',localSource:'리월 전역',
+      mob:['재봉사 바늘','재봉사 실','재봉사 재단기'],
+      mobSource:'인형 재봉사 (폰타인)',mora:2092530,xp:419,
+    },
+    talent:{
+      book:['번영의 가르침','번영의 인도','번영의 철학'],bookDays:'수·토·일 (상인 비경: 부)',
+      weekly:'검은 영역의 거울',weeklySource:'심연 사도',crown:3,mora:4957500,
+    },
+    weapons:[
+      {name:'시금석 위의 꿈',stars:5,note:'원소 공명 강화'},
+      {name:'희극',stars:4,note:'에너지 충전 최상'},
+      {name:'희생의 검',stars:4,note:'스킬 재쿨 감소'},
+    ],
+    artifacts:[
+      {name:'절연의 기치',note:'에너지 충전 기반 폭발 지속'},
+      {name:'역류하는 강',note:'물 원소 피해 강화'},
+    ],
+    artifactStats:{sand:'에너지 충전 효율',cup:'물 원소 피해 보너스',crown:'치명타율 / 치명타 피해',sub:'에너지 충전 효율 ≥ 치명타율 ≥ 치명타 피해'},
+    talentPriority:['원소 폭발','원소 스킬','일반 공격'],
+    parties:[
+      {name:'증발 팀',chars:['행추','후','베넷','카즈하'],note:'물 지속 + 증발 최강'},
+      {name:'냉동 팀',chars:['행추','감유','카즈하','베넷'],note:'냉동 + 소용돌이'},
+      {name:'저과금',chars:['행추','에이미야','베넷','카에야'],note:'4성 위주 증발'},
+    ],
+    efficiency:'4성 중 최상위. 물 원소 지속 부착 독보적. 모든 팀에서 필수급.',
+  },
+};
+
+// ── 캐릭터 목록 (사이드바용) ──
+const CHAR_LIST = [
+  {name:'에스코피에',elem:'cryo',star:5},
+  {name:'종려',elem:'geo',star:5},
+  {name:'후',elem:'pyro',star:5},
+  {name:'푸리나',elem:'hydro',star:5},
+  {name:'라이덴 쇼군',elem:'electro',star:5},
+  {name:'카즈하',elem:'anemo',star:5},
+  {name:'나히다',elem:'dendro',star:5},
+  {name:'감유',elem:'cryo',star:5},
+  {name:'나비아',elem:'geo',star:5},
+  {name:'느비예트',elem:'hydro',star:5},
+  {name:'아를레키노',elem:'pyro',star:5},
+  {name:'씨아오',elem:'anemo',star:5},
+  {name:'야에 미코',elem:'electro',star:5},
+  {name:'알하이탐',elem:'dendro',star:5},
+  {name:'베넷',elem:'pyro',star:4},
+  {name:'행추',elem:'hydro',star:4},
+];
+
+// ══════════════════════════════════════════════════
+//  앱 로직
+// ══════════════════════════════════════════════════
+let curChar = '';
+let curCat  = 'all';
+let progTimer = null;
+
+function getKey() { return localStorage.getItem('genshin_apikey')||''; }
+function saveKey() {
+  const v = document.getElementById('apiInput').value.trim();
+  if (!v.startsWith('sk-ant')) { document.getElementById('apiErr').style.display='block'; return; }
+  localStorage.setItem('genshin_apikey', v);
+  document.getElementById('apiOverlay').style.display='none';
+  updateKeyUI();
+}
+function resetKey() {
+  if (!confirm('API 키를 초기화하시겠어요?')) return;
+  localStorage.removeItem('genshin_apikey');
+  document.getElementById('apiOverlay').style.display='flex';
+  updateKeyUI();
+}
+function updateKeyUI() {
+  const has = !!getKey();
+  document.getElementById('kdot').className = 'kdot'+(has?' on':'');
+  document.getElementById('klabel').textContent = has?'API 키 설정됨 (클릭 변경)':'API 키 없음';
+}
+
+// Wiki image URL
+function wikiImg(name) {
+  return `${WIKI}${encodeURIComponent(name)}.png`;
+}
+function matImg(name) {
+  const f = MAT_IMG[name];
+  return f ? wikiImg(f) : null;
+}
+function weapImg(name) {
+  const f = WEAPON_IMG[name];
+  return f ? wikiImg(f) : null;
+}
+function artImg(name) {
+  const f = ARTIFACT_IMG[name];
+  return f ? wikiImg(f) : null;
+}
+function charImg(d) {
+  return d?.img ? wikiImg(d.img) : null;
+}
+
+// Image card HTML
+function imgCard(name, url, fallback) {
+  if (!url) return '';
+  return `<div class="img-card">
+    <img src="${url}" alt="${name}" onerror="this.closest('.img-card').style.display='none'">
+    <div class="img-card-lbl">${name}</div>
+  </div>`;
+}
+
+// Image grid HTML
+function imgGrid(items, fn) {
+  const cards = items.map(n => imgCard(n, fn(n))).filter(Boolean).join('');
+  return cards ? `<div class="img-grid">${cards}</div>` : '';
+}
+
+// ── Sidebar ──
+function buildList(filter='') {
+  const lf = filter.toLowerCase();
+  const filtered = CHAR_LIST.filter(c => !lf || c.name.includes(lf));
+  const f5 = filtered.filter(c=>c.star===5);
+  const f4 = filtered.filter(c=>c.star===4);
+  let h = '';
+  if (f5.length) { h += '<div class="grp-lbl">5성</div>'; f5.forEach(c=>h+=ciHTML(c)); }
+  if (f4.length) { h += '<div class="grp-lbl">4성</div>'; f4.forEach(c=>h+=ciHTML(c)); }
+  if (!filtered.length) h = '<div style="padding:16px 13px;color:var(--muted);font-size:12.5px">결과 없음</div>';
+  document.getElementById('charList').innerHTML = h;
+  document.querySelectorAll('.ci').forEach(el => {
+    if (el.dataset.name===curChar) el.classList.add('active');
+    el.addEventListener('click', () => {
+      document.getElementById('mainIn').value = el.dataset.name;
+      doSearch(el.dataset.name);
+    });
+  });
+}
+
+function ciHTML(c) {
+  const d = CHAR_DATA[c.name];
+  const img = d ? charImg(d) : null;
+  const thumb = img
+    ? `<img class="ci-thumb" src="${img}" alt="${c.name}" onerror="this.style.display='none'">`
+    : `<div class="ci-placeholder" style="background:${ELEM[c.elem].color}22">${ELEM[c.elem].icon}</div>`;
+  return `<div class="ci" data-name="${c.name}">
+    ${thumb}
+    <div class="ci-info">
+      <div class="ci-name">${c.name}</div>
+      <div class="ci-meta"><span class="ep" style="background:${ELEM[c.elem].color}"></span>${ELEM[c.elem].label} · ★${c.star}</div>
+    </div>
+  </div>`;
+}
+
+// ── Tabs ──
+document.addEventListener('DOMContentLoaded', ()=>{
+  if (getKey()) document.getElementById('apiOverlay').style.display='none';
+  updateKeyUI();
+  buildList();
+
+  document.getElementById('tabs').querySelectorAll('.tab').forEach(t=>{
+    t.addEventListener('click', ()=>{
+      document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+      t.classList.add('active');
+      curCat = t.dataset.cat;
+      if (curChar) render(curChar);
+    });
+  });
+  document.getElementById('mainIn').addEventListener('keydown', e=>{ if(e.key==='Enter') doSearch(); });
+  document.getElementById('apiInput').addEventListener('keydown', e=>{ if(e.key==='Enter') saveKey(); });
+});
+
+// ── Search (instant from data) ──
+function doSearch(override) {
+  const name = override || document.getElementById('mainIn').value.trim();
+  if (!name) { document.getElementById('mainIn').focus(); return; }
+  curChar = name;
+  document.getElementById('mainIn').value = name;
+  buildList(document.getElementById('filterIn').value);
+
+  const d = CHAR_DATA[name];
+  if (d) {
+    showResult(name, d);
+  } else {
+    // Not in DB: offer AI search
+    document.getElementById('emptyState').style.display='none';
+    document.getElementById('resultArea').className='result';
+    document.getElementById('errBox').className='err-box';
+    document.getElementById('resultArea').className='result show';
+    document.getElementById('resultArea').innerHTML = `
+      <div style="background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:24px;box-shadow:var(--sh);text-align:center">
+        <div style="font-size:2rem;margin-bottom:12px">🔍</div>
+        <div style="font-size:15px;font-weight:600;margin-bottom:8px">"${name}" 데이터 없음</div>
+        <div style="font-size:13px;color:var(--sub);margin-bottom:18px">이 캐릭터는 아직 하드코딩 데이터가 없어요.<br>AI 검색으로 정보를 가져올 수 있어요.</div>
+        <button onclick="aiSearch('${name}')" style="background:var(--accent);border:none;border-radius:var(--rs);color:#fff;font-family:inherit;font-size:13px;font-weight:600;padding:9px 22px;cursor:pointer">🤖 AI로 검색하기</button>
+      </div>`;
+  }
+}
+
+// ── Render from hardcoded data ──
+function render(name) {
+  const d = CHAR_DATA[name];
+  if (d) showResult(name, d);
+}
+
+function showResult(name, d) {
+  document.getElementById('emptyState').style.display='none';
+  document.getElementById('progWrap').className='prog';
+  document.getElementById('errBox').className='err-box';
+
+  // Get cached update time
+  const cacheKey = `genshin_updated_${name}`;
+  const updatedAt = localStorage.getItem(cacheKey) || '기본 데이터 (하드코딩)';
+  const isAiData = updatedAt.includes('20');
+
+  const el = ELEM[d.elem]||{label:'',color:'#aaa',icon:'⚔'};
+  const imgUrl = charImg(d);
+
+  let html = '';
+
+  // Header
+  html += `<div class="ch-card">
+    ${imgUrl ? `<img class="ch-img" src="${imgUrl}" alt="${name}" onerror="this.style.display='none'">` : `<div class="ch-img" style="background:${el.color}22;display:flex;align-items:center;justify-content:center;font-size:2.5rem">${el.icon}</div>`}
+    <div class="ch-info">
+      <div class="ch-name">${name}</div>
+      <div class="badges">
+        <span class="badge b-star">★${d.star}성</span>
+        <span class="badge b-elem">${el.icon} ${el.label}</span>
+        <span class="badge b-weap">${d.weapon}</span>
+        <span class="badge b-role">${d.role}</span>
+      </div>
+      ${d.desc ? `<div class="ch-desc">${d.desc}</div>` : ''}
+    </div>
+  </div>`;
+
+  // Update bar
+  html += `<div class="update-bar">
+    <span>📅 ${isAiData ? 'AI 업데이트: '+updatedAt : updatedAt}</span>
+    <button class="update-btn" onclick="aiUpdate('${name}')">🔄 최신 정보로 업데이트</button>
+  </div>`;
+
+  // ── Sections by category ──
+  const cat = curCat;
+
+  if (cat==='all'||cat==='ascension') html += ascensionSection(name, d);
+  if (cat==='all'||cat==='talent')    html += talentSection(name, d);
+  if (cat==='all'||cat==='build')     html += buildSection(name, d);
+  if (cat==='all'||cat==='party')     html += partySection(name, d);
+  if (cat==='all'||cat==='efficiency') html += efficiencySection(name, d);
+
+  const ra = document.getElementById('resultArea');
+  ra.innerHTML = html;
+  ra.className = 'result show';
+}
+
+function ascensionSection(name, d) {
+  const a = d.ascension;
+  const gemImgs = imgGrid(a.gem, matImg);
+  const bossImg = imgGrid([a.boss], matImg);
+  const localImg = imgGrid([a.local], matImg);
+  const mobImgs = imgGrid(a.mob, matImg);
+
+  return `<div class="sections">
+  <div class="section-card full">
+    <div class="sec-title">캐릭터 돌파 재료</div>
+    <table class="tbl">
+      <tr><th>재료 종류</th><th>재료명</th><th>수급처</th></tr>
+      <tr><td>보석 재료</td><td>${a.gem.join(', ')}</td><td>${a.gemSource}</td></tr>
+      <tr><td>보스 드롭</td><td>${a.boss}</td><td>${a.bossSource}</td></tr>
+      <tr><td>지역 특산물</td><td>${a.local}</td><td>${a.localSource}</td></tr>
+      <tr><td>일반 드롭</td><td>${a.mob.join(', ')}</td><td>${a.mobSource}</td></tr>
+      <tr><td>모라</td><td colspan="2">${a.mora.toLocaleString()}</td></tr>
+      <tr><td>영웅의 경험</td><td colspan="2">${a.xp}개</td></tr>
+    </table>
+    <div style="margin-top:12px">
+      <div style="font-size:11.5px;color:var(--muted);margin-bottom:6px">보석 재료</div>${gemImgs}
+      <div style="font-size:11.5px;color:var(--muted);margin:8px 0 6px">보스 / 특산물 / 일반 드롭</div>
+      <div class="img-grid">
+        ${[a.boss,a.local,...a.mob].map(n=>imgCard(n, matImg(n))).join('')}
+      </div>
+    </div>
+  </div>
+  </div>`;
+}
+
+function talentSection(name, d) {
+  const t = d.talent;
+  const bookImgs = imgGrid(t.book, matImg);
+  const weeklyImg = imgGrid([t.weekly], matImg);
+  const crownImg = imgGrid(['지식의 왕관'], matImg);
+
+  return `<div class="sections">
+  <div class="section-card full">
+    <div class="sec-title">특성 돌파 재료</div>
+    <table class="tbl">
+      <tr><th>재료 종류</th><th>재료명</th><th>수급처 / 요일</th></tr>
+      <tr><td>특성 책</td><td>${t.book.join(', ')}</td><td>${t.bookDays}</td></tr>
+      <tr><td>주간 보스</td><td>${t.weekly}</td><td>${t.weeklySource}</td></tr>
+      <tr><td>지식의 왕관</td><td>지식의 왕관 × ${t.crown}</td><td>기간 한정 이벤트</td></tr>
+      <tr><td>모라</td><td colspan="2">${t.mora.toLocaleString()} (특성 1개 기준 Lv10)</td></tr>
+    </table>
+    <div style="margin-top:12px">
+      <div style="font-size:11.5px;color:var(--muted);margin-bottom:6px">특성 책</div>${bookImgs}
+      <div class="img-grid">
+        ${imgCard(t.weekly, matImg(t.weekly))}
+        ${imgCard('지식의 왕관', matImg('지식의 왕관'))}
+      </div>
+    </div>
+  </div>
+  </div>`;
+}
+
+function buildSection(name, d) {
+  const wRows = d.weapons.map((w,i) =>
+    `<tr><td>${i+1}순위 ${w.stars===5?'⭐⭐⭐⭐⭐':'⭐⭐⭐⭐'}</td><td>${w.name}</td><td>${w.note}</td></tr>`
+  ).join('');
+  const aRows = d.artifacts.map((a,i) =>
+    `<tr><td>${i+1}순위</td><td>${a.name}</td><td>${a.note}</td></tr>`
+  ).join('');
+  const s = d.artifactStats;
+  const weapImgs2 = `<div class="img-grid">${d.weapons.map(w=>imgCard(w.name, weapImg(w.name))).join('')}</div>`;
+  const artImgs = `<div class="img-grid">${d.artifacts.map(a=>imgCard(a.name, artImg(a.name))).join('')}</div>`;
+
+  return `<div class="sections">
+  <div class="section-card">
+    <div class="sec-title">추천 무기</div>
+    <table class="tbl"><tr><th>순위</th><th>무기명</th><th>이유</th></tr>${wRows}</table>
+    ${weapImgs2}
+  </div>
+  <div class="section-card">
+    <div class="sec-title">추천 성유물</div>
+    <table class="tbl"><tr><th>순위</th><th>세트명</th><th>이유</th></tr>${aRows}</table>
+    ${artImgs}
+    <div style="margin-top:12px">
+      <div style="font-size:11.5px;color:var(--muted);margin-bottom:8px">성유물 스탯 우선순위</div>
+      <div class="stat-row"><div class="stat-key">모래</div><div class="stat-val">${s.sand}</div></div>
+      <div class="stat-row"><div class="stat-key">잔</div><div class="stat-val">${s.cup}</div></div>
+      <div class="stat-row"><div class="stat-key">왕관</div><div class="stat-val">${s.crown}</div></div>
+      <div class="stat-row"><div class="stat-key">부속 스탯</div><div class="stat-val" style="font-size:12px">${s.sub}</div></div>
+    </div>
+  </div>
+  <div class="section-card">
+    <div class="sec-title">특성 육성 우선순위</div>
+    <div class="priority">
+      ${d.talentPriority.map((t,i)=>`<div class="prio-pill"><span class="prio-num">${i+1}</span>${t}</div>`).join('')}
+    </div>
+  </div>
+  </div>`;
+}
+
+function partySection(name, d) {
+  const cards = d.parties.map(p=>`
+    <div class="party-card">
+      <div class="party-name">${p.name}</div>
+      <div class="party-chars">${p.chars.map(c=>`<span class="party-char">${c}</span>`).join('')}</div>
+      <div class="party-note">${p.note}</div>
+    </div>`).join('');
+  return `<div class="sections"><div class="section-card full">
+    <div class="sec-title">파티 구성 추천</div>
+    ${cards}
+  </div></div>`;
+}
+
+function efficiencySection(name, d) {
+  return `<div class="sections"><div class="section-card full">
+    <div class="sec-title">효율 분석</div>
+    <div class="eff-box">${d.efficiency}</div>
+  </div></div>`;
+}
+
+// ── AI Update ──
+const PROG_STEPS = [
+  {p:8,m:'웹 검색 시작...'},
+  {p:20,m:'캐릭터 기본 정보 검색 중...'},
+  {p:38,m:'돌파·특성 재료 수집 중...'},
+  {p:55,m:'세팅 가이드 분석 중...'},
+  {p:70,m:'파티 구성 검색 중...'},
+  {p:82,m:'효율 데이터 정리 중...'},
+  {p:92,m:'마무리 중...'},
+];
+
+function startProgress(name) {
+  const d = CHAR_DATA[name];
+  const imgUrl = d ? charImg(d) : null;
+  const pw = document.getElementById('progWrap');
+  const pi = document.getElementById('progImg');
+  if (imgUrl) { pi.src=imgUrl; pi.style.display=''; } else pi.style.display='none';
+  document.getElementById('progName').textContent = name;
+  document.getElementById('progPct').textContent='0%';
+  document.getElementById('progBar').style.width='0%';
+  document.getElementById('progStep').textContent='준비 중...';
+  pw.className='prog show';
+  document.getElementById('resultArea').className='result';
+
+  let si=0;
+  function adv() {
+    if(si>=PROG_STEPS.length) return;
+    const s=PROG_STEPS[si++];
+    document.getElementById('progPct').textContent=s.p+'%';
+    document.getElementById('progBar').style.width=s.p+'%';
+    document.getElementById('progStep').textContent=s.m;
+    progTimer=setTimeout(adv, 700+Math.random()*1200);
+  }
+  adv();
+}
+
+function stopProgress() {
+  clearTimeout(progTimer);
+  document.getElementById('progPct').textContent='100%';
+  document.getElementById('progBar').style.width='100%';
+  document.getElementById('progStep').textContent='완료!';
+  setTimeout(()=>{ document.getElementById('progWrap').className='prog'; }, 500);
+}
+
+async function aiUpdate(name) {
+  const key = getKey();
+  if (!key) { document.getElementById('apiOverlay').style.display='flex'; return; }
+  startProgress(name);
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key':key,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true',
+      },
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:2000,
+        system:'원신(Genshin Impact) 전문 공략 가이드. 웹 검색으로 최신 버전 기준 정확한 정보를 한국어로 간결하게 정리. 모든 이름은 공식 한국어 번역으로. 마크다운 사용(## 제목, 표).',
+        tools:[{type:'web_search_20250305',name:'web_search'}],
+        messages:[{role:'user',content:`원신 캐릭터 "${name}"의 최신 정보를 웹 검색해서 알려줘. 최신 버전 기준.
+
+## 기본 정보
+성급·원소·무기·역할
+
+## 돌파 재료
+| 재료명 | 수급처 | Lv~60 | Lv~70 | Lv~80 | Lv~90 |
+
+## 특성 재료  
+| 재료명 | 수급처 | Lv~6 | Lv~8 | Lv~10 |
+비경 이름·요일, 주간보스 재료
+
+## 추천 무기
+| 순위 | 무기명 | 등급 | 이유 |
+
+## 추천 성유물
+| 순위 | 세트명 | 이유 |
+성유물 스탯 (모래/잔/왕관/부속)
+
+## 파티 구성
+고과금/범용/저과금 조합 각 4명
+
+## 효율 분석
+돌파 효율, 메타 포지션, 총평`}]
+      })
+    });
+
+    if(!res.ok) throw new Error(`API 오류 ${res.status}`);
+    const data = await res.json();
+    const text = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
+    if(!text.trim()) throw new Error('결과 없음');
+
+    stopProgress();
+
+    // Save update time
+    const now = new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit'});
+    localStorage.setItem(`genshin_updated_${name}`, now);
+
+    // Show AI result below hardcoded data
+    if (CHAR_DATA[name]) showResult(name, CHAR_DATA[name]);
+
+    // Append AI section
+    const ra = document.getElementById('resultArea');
+    ra.innerHTML += `<div class="sections"><div class="section-card full">
+      <div class="sec-title">🤖 AI 최신 정보 (${now})</div>
+      <div style="font-size:13.5px;line-height:1.85;white-space:pre-wrap;color:var(--text)">${text.replace(/</g,'&lt;')}</div>
+    </div></div>`;
+
+  } catch(e) {
+    stopProgress();
+    document.getElementById('errBox').textContent='업데이트 오류: '+e.message;
+    document.getElementById('errBox').className='err-box show';
+  }
+}
+
+async function aiSearch(name) {
+  const key = getKey();
+  if(!key){ document.getElementById('apiOverlay').style.display='flex'; return; }
+  startProgress(name);
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key':key,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true',
+      },
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',max_tokens:2500,
+        system:'원신 공략 가이드. 웹 검색으로 최신 정보 한국어로 정리. 서론 없이 바로 핵심 정보부터.',
+        tools:[{type:'web_search_20250305',name:'web_search'}],
+        messages:[{role:'user',content:`원신 캐릭터 "${name}" 전체 정보 검색해줘. 한국 공식 번역 이름으로.
+
+## 기본 정보 / ## 돌파 재료 표 / ## 특성 재료 표 / ## 추천 무기 표 / ## 추천 성유물 표 / ## 성유물 스탯 / ## 파티 구성 / ## 효율 분석`}]
+      })
+    });
+    if(!res.ok) throw new Error(`오류 ${res.status}`);
+    const data = await res.json();
+    const text = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
+    stopProgress();
+    const now = new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit'});
+    localStorage.setItem(`genshin_updated_${name}`, now);
+    const ra = document.getElementById('resultArea');
+    ra.className='result show';
+    ra.innerHTML=`
+      <div class="ch-card" style="margin-bottom:14px">
+        <div style="font-size:20px;font-weight:700">${name}</div>
+      </div>
+      <div class="update-bar">
+        <span>📅 AI 검색: ${now}</span>
+        <button class="update-btn" onclick="aiSearch('${name}')">🔄 다시 검색</button>
+      </div>
+      <div class="sections"><div class="section-card full">
+        <div class="sec-title">🤖 AI 검색 결과</div>
+        <div style="font-size:13.5px;line-height:1.85;white-space:pre-wrap">${text.replace(/</g,'&lt;')}</div>
+      </div></div>`;
+  } catch(e) {
+    stopProgress();
+    document.getElementById('errBox').textContent='검색 오류: '+e.message;
+    document.getElementById('errBox').className='err-box show';
+  }
+}
+
+function filterList(v){ buildList(v); }
+</script>
+</body>
+</html>

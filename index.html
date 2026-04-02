@@ -1,0 +1,1856 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>원신 캐릭터 위키</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════
+   CSS VARIABLES & RESET
+═══════════════════════════════════════ */
+:root {
+  --bg: #f7f6f2;
+  --bg2: #edecea;
+  --surface: #ffffff;
+  --border: #e0ddd6;
+  --border2: #ccc9c0;
+  --text: #1c1a17;
+  --text2: #5c5a54;
+  --text3: #9c9a94;
+  --accent: #c49a3c;
+  --accent-light: #fdf4e0;
+  --accent-border: #e8d090;
+  --blue: #3a6ea8;
+  --green: #3a7a4a;
+  --red: #a03030;
+
+  /* Element colors */
+  --cryo: #7eb8d4;    --cryo-bg: #eaf4f9;
+  --pyro: #e07040;    --pyro-bg: #fdf0e8;
+  --hydro: #5090d0;   --hydro-bg: #eaf0fb;
+  --electro: #b060d0; --electro-bg: #f5eafb;
+  --anemo: #50b090;   --anemo-bg: #eaf7f2;
+  --geo: #c8a030;     --geo-bg: #fdf6e0;
+  --dendro: #70b040;  --dendro-bg: #f0f8e8;
+
+  --r: 12px; --rs: 7px;
+  --sh: 0 1px 3px rgba(0,0,0,.05), 0 4px 16px rgba(0,0,0,.06);
+  --sh-hover: 0 4px 12px rgba(0,0,0,.10), 0 8px 24px rgba(0,0,0,.08);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ═══════════════════════════════════════
+   PAGES (hash routing)
+═══════════════════════════════════════ */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ═══════════════════════════════════════
+   HEADER
+═══════════════════════════════════════ */
+header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 100;
+}
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.logo {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.logo-sub {
+  font-size: 11px;
+  color: var(--text3);
+  font-weight: 400;
+}
+
+/* Search bar */
+.search-wrap {
+  flex: 1;
+  max-width: 400px;
+  position: relative;
+}
+.search-wrap input {
+  width: 100%;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 7px 16px 7px 36px;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--text);
+  outline: none;
+  transition: all .15s;
+}
+.search-wrap input:focus {
+  border-color: var(--accent-border);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(196,154,60,.10);
+}
+.search-wrap input::placeholder { color: var(--text3); }
+.search-icon {
+  position: absolute;
+  left: 12px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--text3);
+  font-size: 13px;
+  pointer-events: none;
+}
+
+/* Nav tabs */
+.nav-tabs {
+  display: flex;
+  gap: 2px;
+  margin-left: auto;
+}
+.nav-tab {
+  background: none; border: none;
+  color: var(--text2);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px; font-weight: 500;
+  padding: 6px 12px;
+  border-radius: var(--rs);
+  transition: all .15s;
+}
+.nav-tab:hover { background: var(--bg2); color: var(--text); }
+.nav-tab.active {
+  background: var(--accent-light);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* ═══════════════════════════════════════
+   LIST PAGE — main grid
+═══════════════════════════════════════ */
+.list-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 20px 60px;
+}
+
+/* Filter bar */
+.filter-bar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  align-items: center;
+}
+.filter-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text3);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-right: 2px;
+}
+.filter-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  color: var(--text2);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12.5px;
+  padding: 5px 13px;
+  transition: all .15s;
+  display: flex; align-items: center; gap: 5px;
+}
+.filter-btn:hover { border-color: var(--border2); color: var(--text); }
+.filter-btn.active {
+  background: var(--accent-light);
+  border-color: var(--accent-border);
+  color: var(--accent);
+  font-weight: 600;
+}
+.filter-elem-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Character grid */
+.char-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 14px;
+}
+
+/* Character card */
+.char-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform .18s ease, box-shadow .18s ease;
+  box-shadow: var(--sh);
+}
+.char-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--sh-hover);
+}
+.char-card-img-wrap {
+  position: relative;
+  padding-top: 100%; /* square */
+  overflow: hidden;
+}
+.char-card-img-wrap img {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  transition: transform .3s ease;
+}
+.char-card:hover .char-card-img-wrap img { transform: scale(1.04); }
+
+.char-card-img-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.4rem;
+}
+.char-card-star {
+  position: absolute;
+  top: 6px; left: 6px;
+  background: rgba(0,0,0,.55);
+  border-radius: 4px;
+  color: #ffd060;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  letter-spacing: .03em;
+}
+.char-card-elem {
+  position: absolute;
+  top: 6px; right: 6px;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+  backdrop-filter: blur(4px);
+}
+.char-card-body {
+  padding: 10px 10px 12px;
+}
+.char-card-name {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 3px;
+}
+.char-card-meta {
+  font-size: 11px;
+  color: var(--text3);
+  display: flex; align-items: center; gap: 4px;
+}
+
+/* No results */
+.no-results {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text3);
+  font-size: 14px;
+}
+
+/* ═══════════════════════════════════════
+   DETAIL PAGE
+═══════════════════════════════════════ */
+.detail-page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 20px 60px;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12.5px; color: var(--text3);
+  margin-bottom: 20px;
+}
+.breadcrumb-link {
+  color: var(--accent);
+  cursor: pointer;
+  text-decoration: none;
+}
+.breadcrumb-link:hover { text-decoration: underline; }
+
+/* Char hero */
+.char-hero {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  box-shadow: var(--sh);
+  overflow: hidden;
+  margin-bottom: 20px;
+  display: flex;
+  gap: 0;
+}
+.char-hero-img-col {
+  width: 180px;
+  min-width: 180px;
+  position: relative;
+  overflow: hidden;
+}
+.char-hero-img-col img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+}
+.char-hero-img-placeholder {
+  width: 100%; height: 100%;
+  min-height: 220px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 5rem;
+}
+.char-hero-info {
+  flex: 1;
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.char-hero-name {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -.02em;
+}
+.char-badges {
+  display: flex; gap: 6px; flex-wrap: wrap;
+}
+.badge {
+  border-radius: 5px;
+  font-size: 11.5px; font-weight: 600;
+  padding: 3px 10px;
+}
+.b-star { background: #fef8e6; color: #b8860b; border: 1px solid #e8d580; }
+.b-elem { border: 1px solid; }
+.b-weap { background: var(--bg2); color: var(--text2); border: 1px solid var(--border); }
+.b-role { background: #eef6f0; color: var(--green); border: 1px solid #b8dfc0; }
+.b-region { background: var(--bg2); color: var(--text2); border: 1px solid var(--border); }
+
+.char-hero-desc {
+  font-size: 13.5px;
+  color: var(--text2);
+  line-height: 1.75;
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+
+/* Detail tabs */
+.detail-tabs {
+  display: flex; gap: 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 20px;
+  overflow-x: auto;
+}
+.detail-tabs::-webkit-scrollbar { display: none; }
+.detail-tab {
+  background: none; border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text2);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13.5px; font-weight: 500;
+  padding: 10px 18px;
+  white-space: nowrap;
+  transition: color .15s, border-color .15s;
+}
+.detail-tab:hover { color: var(--text); }
+.detail-tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  font-weight: 700;
+}
+
+/* Section */
+.section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  box-shadow: var(--sh);
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+.section-header {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px; font-weight: 700;
+  color: var(--text);
+  background: var(--bg2);
+  display: flex; align-items: center; gap: 8px;
+}
+.section-icon { font-size: 15px; }
+.section-body { padding: 16px 18px; }
+
+/* Tables */
+.wtable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.wtable th {
+  background: var(--bg2);
+  color: var(--text3);
+  font-size: 11px; font-weight: 600;
+  letter-spacing: .05em; text-transform: uppercase;
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.wtable td {
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+.wtable tr:last-child td { border-bottom: none; }
+.wtable tr:nth-child(even) td { background: #fafaf8; }
+.wtable td.c-name { color: var(--blue); font-weight: 500; }
+.wtable td.c-source { color: var(--text2); font-size: 12.5px; }
+.wtable td.c-note { color: var(--text2); font-size: 12.5px; }
+.wtable td.c-rank { color: var(--accent); font-weight: 700; }
+
+/* Image grids for materials */
+.mat-grid {
+  display: flex; gap: 10px; flex-wrap: wrap;
+  margin-top: 14px;
+}
+.mat-item {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 5px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 10px 8px;
+  min-width: 70px; max-width: 88px;
+  transition: border-color .15s;
+}
+.mat-item:hover { border-color: var(--border2); }
+.mat-item img {
+  width: 48px; height: 48px;
+  object-fit: contain;
+  border-radius: 6px;
+}
+.mat-item-fallback {
+  width: 48px; height: 48px;
+  border-radius: 6px;
+  background: var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+}
+.mat-item-name {
+  font-size: 10.5px;
+  color: var(--text2);
+  text-align: center;
+  line-height: 1.3;
+  word-break: keep-all;
+}
+
+/* Priority pills */
+.priority-list { display: flex; gap: 8px; flex-wrap: wrap; }
+.priority-pill {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--accent-light);
+  border: 1px solid var(--accent-border);
+  border-radius: 20px;
+  padding: 5px 12px 5px 6px;
+}
+.priority-num {
+  background: var(--accent);
+  color: #fff;
+  border-radius: 50%;
+  width: 20px; height: 20px;
+  font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.priority-text { font-size: 12.5px; font-weight: 500; color: var(--accent); }
+
+/* Stat rows */
+.stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+@media(max-width:500px) { .stat-grid { grid-template-columns: 1fr; } }
+.stat-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: var(--bg2);
+  border-radius: var(--rs);
+  padding: 8px 12px;
+}
+.stat-key { color: var(--text3); font-size: 11.5px; font-weight: 600; width: 50px; flex-shrink: 0; padding-top: 1px; }
+.stat-val { color: var(--text); font-size: 12.5px; line-height: 1.5; }
+
+/* Party cards */
+.party-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+@media(max-width:600px){ .party-grid { grid-template-columns: 1fr; } }
+.party-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--rs);
+  padding: 12px 14px;
+}
+.party-card-name { font-size: 11px; font-weight: 700; color: var(--accent); letter-spacing: .05em; text-transform: uppercase; margin-bottom: 8px; }
+.party-chars { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 7px; }
+.party-char {
+  font-size: 12px; font-weight: 500;
+  color: var(--blue);
+  background: #eef3fa;
+  border: 1px solid #c0d8f0;
+  border-radius: 4px;
+  padding: 2px 8px;
+}
+.party-note { font-size: 12px; color: var(--text2); line-height: 1.5; }
+
+/* Efficiency box */
+.eff-box {
+  background: #eef6f0;
+  border: 1px solid #b8dfc0;
+  border-radius: var(--rs);
+  padding: 14px 16px;
+  font-size: 13.5px;
+  color: var(--text);
+  line-height: 1.75;
+}
+
+/* Mobile */
+@media(max-width:600px){
+  .char-hero { flex-direction: column; }
+  .char-hero-img-col { width: 100%; min-width: unset; height: 200px; }
+  .char-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; }
+  .nav-tabs { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a class="logo" onclick="goHome()">
+      ⚔️ 원신 위키
+      <span class="logo-sub">캐릭터 도감</span>
+    </a>
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="캐릭터 검색..." oninput="onSearch(this.value)">
+    </div>
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="goHome()">캐릭터</button>
+    </div>
+  </div>
+</header>
+
+<!-- ── LIST PAGE ── -->
+<div id="listPage" class="page active">
+  <div class="list-page">
+
+    <!-- Filter bar -->
+    <div class="filter-bar" id="filterBar">
+      <span class="filter-label">원소</span>
+      <button class="filter-btn active" data-filter-elem="all" onclick="setElemFilter('all')">전체</button>
+      <button class="filter-btn" data-filter-elem="pyro" onclick="setElemFilter('pyro')"><span class="filter-elem-dot" style="background:var(--pyro)"></span>불꽃</button>
+      <button class="filter-btn" data-filter-elem="hydro" onclick="setElemFilter('hydro')"><span class="filter-elem-dot" style="background:var(--hydro)"></span>물</button>
+      <button class="filter-btn" data-filter-elem="cryo" onclick="setElemFilter('cryo')"><span class="filter-elem-dot" style="background:var(--cryo)"></span>얼음</button>
+      <button class="filter-btn" data-filter-elem="electro" onclick="setElemFilter('electro')"><span class="filter-elem-dot" style="background:var(--electro)"></span>번개</button>
+      <button class="filter-btn" data-filter-elem="anemo" onclick="setElemFilter('anemo')"><span class="filter-elem-dot" style="background:var(--anemo)"></span>바람</button>
+      <button class="filter-btn" data-filter-elem="geo" onclick="setElemFilter('geo')"><span class="filter-elem-dot" style="background:var(--geo)"></span>바위</button>
+      <button class="filter-btn" data-filter-elem="dendro" onclick="setElemFilter('dendro')"><span class="filter-elem-dot" style="background:var(--dendro)"></span>풀</button>
+    </div>
+
+    <div class="char-grid" id="charGrid"></div>
+    <div class="no-results" id="noResults" style="display:none">검색 결과가 없어요</div>
+  </div>
+</div>
+
+<!-- ── DETAIL PAGE ── -->
+<div id="detailPage" class="page">
+  <div class="detail-page">
+
+    <div class="breadcrumb">
+      <a class="breadcrumb-link" onclick="goHome()">캐릭터</a>
+      <span>›</span>
+      <span id="breadcrumbName">—</span>
+    </div>
+
+    <!-- Hero -->
+    <div class="char-hero" id="charHero"></div>
+
+    <!-- Tabs -->
+    <div class="detail-tabs" id="detailTabs">
+      <button class="detail-tab active" data-tab="ascension" onclick="switchTab('ascension')">돌파 재료</button>
+      <button class="detail-tab" data-tab="talent" onclick="switchTab('talent')">특성 재료</button>
+      <button class="detail-tab" data-tab="build" onclick="switchTab('build')">세팅 가이드</button>
+      <button class="detail-tab" data-tab="party" onclick="switchTab('party')">파티 구성</button>
+      <button class="detail-tab" data-tab="efficiency" onclick="switchTab('efficiency')">효율 분석</button>
+    </div>
+
+    <div id="detailContent"></div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════
+//  ELEMENT CONFIG
+// ════════════════════════════════════════════════════
+const ELEM = {
+  cryo:    { label:'얼음', color:'#7eb8d4', bg:'#eaf4f9', icon:'❄' },
+  pyro:    { label:'불꽃', color:'#e07040', bg:'#fdf0e8', icon:'🔥' },
+  hydro:   { label:'물',   color:'#5090d0', bg:'#eaf0fb', icon:'💧' },
+  electro: { label:'번개', color:'#b060d0', bg:'#f5eafb', icon:'⚡' },
+  anemo:   { label:'바람', color:'#50b090', bg:'#eaf7f2', icon:'🌀' },
+  geo:     { label:'바위', color:'#c8a030', bg:'#fdf6e0', icon:'⛰' },
+  dendro:  { label:'풀',   color:'#70b040', bg:'#f0f8e8', icon:'🌿' },
+};
+
+// ════════════════════════════════════════════════════
+//  IMAGE URL MAPPINGS (원신 위키 CDN 직접 사용)
+// ════════════════════════════════════════════════════
+const WIKI_BASE = 'https://genshin-impact.fandom.com/wiki/Special:FilePath/';
+const w = name => WIKI_BASE + encodeURIComponent(name) + '.png';
+
+// 캐릭터 카드 이미지
+const CHAR_IMG = {
+  '에스코피에':   w('Escoffier_Card'),
+  '종려':         w('Zhongli_Card'),
+  '후':           w('Hu_Tao_Card'),
+  '푸리나':       w('Furina_Card'),
+  '라이덴 쇼군':  w('Raiden_Shogun_Card'),
+  '카즈하':       w('Kaedehara_Kazuha_Card'),
+  '나히다':       w('Nahida_Card'),
+  '감유':         w('Ganyu_Card'),
+  '나비아':       w('Navia_Card'),
+  '느비예트':     w('Neuvillette_Card'),
+  '아를레키노':   w('Arlecchino_Card'),
+  '씨아오':       w('Xiao_Card'),
+  '야에 미코':    w('Yae_Miko_Card'),
+  '알하이탐':     w('Alhaitham_Card'),
+  '라우마':       w('Lauma_Card'),
+  '플린스':       w('Flins_Card'),
+  '네페르':       w('Nefer_Card'),
+  '두린':         w('Durin_Card'),
+  '콜롬비나':     w('Columbina_Card'),
+  '베넷':         w('Bennett_Card'),
+  '행추':         w('Xingqiu_Card'),
+};
+
+// 재료 이미지
+const MAT_IMG = {
+  // 보석 (얼음)
+  '서늘한 빙옥 가루':      w('Shivada_Jade_Sliver'),
+  '서늘한 빙옥 조각':      w('Shivada_Jade_Fragment'),
+  '서늘한 빙옥 덩이':      w('Shivada_Jade_Chunk'),
+  '서늘한 빙옥':           w('Shivada_Jade_Gemstone'),
+  // 보석 (불꽃)
+  '염화 아게이트 가루':    w('Agnidus_Agate_Sliver'),
+  '염화 아게이트 조각':    w('Agnidus_Agate_Fragment'),
+  '염화 아게이트 덩이':    w('Agnidus_Agate_Chunk'),
+  '염화 아게이트':         w('Agnidus_Agate_Gemstone'),
+  '불타오르는 마노 가루':  w('Agnidus_Agate_Sliver'),
+  '불타오르는 마노 조각':  w('Agnidus_Agate_Fragment'),
+  '불타오르는 마노 덩이':  w('Agnidus_Agate_Chunk'),
+  '불타오르는 마노':       w('Agnidus_Agate_Gemstone'),
+  // 보석 (물)
+  '수류 청금석 가루':      w('Varunada_Lazurite_Sliver'),
+  '수류 청금석 조각':      w('Varunada_Lazurite_Fragment'),
+  '수류 청금석 덩이':      w('Varunada_Lazurite_Chunk'),
+  '수류 청금석':           w('Varunada_Lazurite_Gemstone'),
+  '순수한 청금석 가루':    w('Varunada_Lazurite_Sliver'),
+  '순수한 청금석 조각':    w('Varunada_Lazurite_Fragment'),
+  '순수한 청금석 덩이':    w('Varunada_Lazurite_Chunk'),
+  '순수한 청금석':         w('Varunada_Lazurite_Gemstone'),
+  // 보석 (번개)
+  '번개 자수정 가루':      w('Vajrada_Amethyst_Sliver'),
+  '번개 자수정 조각':      w('Vajrada_Amethyst_Fragment'),
+  '번개 자수정 덩이':      w('Vajrada_Amethyst_Chunk'),
+  '번개 자수정':           w('Vajrada_Amethyst_Gemstone'),
+  '승리의 자수정 가루':    w('Vajrada_Amethyst_Sliver'),
+  '승리의 자수정 조각':    w('Vajrada_Amethyst_Fragment'),
+  '승리의 자수정 덩이':    w('Vajrada_Amethyst_Chunk'),
+  '승리의 자수정':         w('Vajrada_Amethyst_Gemstone'),
+  // 보석 (바람)
+  '취록 비취 가루':        w('Vayuda_Turquoise_Sliver'),
+  '취록 비취 조각':        w('Vayuda_Turquoise_Fragment'),
+  '취록 비취 덩이':        w('Vayuda_Turquoise_Chunk'),
+  '취록 비취':             w('Vayuda_Turquoise_Gemstone'),
+  // 보석 (바위)
+  '대지 황수정 가루':      w('Prithiva_Topaz_Sliver'),
+  '대지 황수정 조각':      w('Prithiva_Topaz_Fragment'),
+  '대지 황수정 덩이':      w('Prithiva_Topaz_Chunk'),
+  '대지 황수정':           w('Prithiva_Topaz_Gemstone'),
+  // 보석 (풀)
+  '창성 녹화석 가루':      w('Nagadus_Emerald_Sliver'),
+  '창성 녹화석 조각':      w('Nagadus_Emerald_Fragment'),
+  '창성 녹화석 덩이':      w('Nagadus_Emerald_Chunk'),
+  '창성 녹화석':           w('Nagadus_Emerald_Gemstone'),
+  '자라나는 비취 가루':    w('Nagadus_Emerald_Sliver'),
+  '자라나는 비취 조각':    w('Nagadus_Emerald_Fragment'),
+  '자라나는 비취 덩이':    w('Nagadus_Emerald_Chunk'),
+  '자라나는 비취':         w('Nagadus_Emerald_Gemstone'),
+  // 보스 드롭
+  '비밀근원 분사구':       w('Meshing_Gear'),
+  '여상의 혼':             w('Geo_Hypostasis'),
+  '차가운 심장':           w('Hellfire_Butterfly'),
+  '차가운 불빛':           w('Hellfire_Butterfly'),
+  '가득한 물':             w('Dragonheir_False_Fin'),
+  '번영하는 태양의 눈':    w('Thunderbird_Talon'),
+  '고대 귀족 가면':        w('Ancient_Chord'),
+  '짓밟힌 초상':           w('Worldspan_Fern'),
+  '달맞이꽃의 꽃가루':    w('Evergloom_Ring'),
+  '달빛 가시':             w('Moon_Piercer'),
+  '멸화의 나비':           w('Lightless_Eye_of_the_Maelstrom'),
+  '끝없는 몽상':           w('Daaka_Bhutatathata'),
+  '빛을 품은 날개':        w('Lightless_Eye_of_the_Maelstrom'),
+  '달의 힘 오리 금형':     w('Ducky_Mold'),
+  '군용 순환식 달의 힘 코어': w('Lightless_Eye_of_the_Maelstrom'),
+  '빛나는 뿔':             w('Radiant_Antler'),
+  '달빛 경로의 비늘':      w('Moon_Piercer'),
+  // 지역 특산물
+  '진달래':                w('Cor_Lapis'),
+  '전통 밀화':             w('Glaze_Lily'),
+  '담경초':                w('Wolfhook'),
+  '바다 이슬꽃':           w('Romaritime_Flower'),
+  '보라색 잣':             w('Sakura_Bloom'),
+  '바다 배추':             w('Naku_Weed'),
+  '아케소리아 열매':       w('Rukkhashava_Mushrooms'),
+  '강철초':                w('Iron_Aster'),
+  '루미두스 종':           w('Lumidouce_Bell'),
+  '영원한 불꽃 연꽃':      w('Beryl_Conch'),
+  '황금빛 체리':           w('Calla_Lily'),
+  '달빛 은':               w('Moonfall_Silver'),
+  '서리촛대꽃':            w('Frostlamp_Flower'),
+  '솔방울 호박':           w('Pine_Amber'),
+  '호랑가시나무풀':        w('Winter_Icelea'),
+  // 일반 드롭
+  '맞물림 톱니바퀴':       w('Gear'),
+  '평톱니바퀴':            w('Mechanical_Spur_Gear'),
+  '오토마톤 코어 톱니바퀴': w('Artificed_Dynamic_Gear'),
+  '훼손된 구동축':         w('Heavy_Horn'),
+  '강화 구동축':           w('Black_Bronze_Horn'),
+  '정밀 구동축':           w('Black_Crystal_Horn'),
+  '녹슨 화살촉':           w('Firm_Arrowhead'),
+  '뒤틀린 화살촉':         w('Sharp_Arrowhead'),
+  '독이 묻은 화살촉':      w('Weathered_Arrowhead'),
+  '쿠즈사군 흉장':         w('Old_Jade'),
+  '엘리트 쿠즈사군 흉장':  w('Exquisite_Jade'),
+  '직속 쿠즈사군 흉장':    w('Eerie_Instruction'),
+  '레이선 가면':           w('Old_Mask'),
+  '레이선 뿔':             w('Damaged_Prism'),
+  '기이한 레이선 뿔':      w('Turbid_Prism'),
+  '완전한 레이선 뿔':      w('Ley_Line_Sprout'),
+  '마모된 표장':           w('Faded_Red_Satin'),
+  '정교한 표장':           w('Trimmed_Red_Silk'),
+  '서릿빛 표장':           w('Rich_Red_Brocade'),
+  '낡은 뼈다귀':           w('Old_Bone'),
+  '풍화된 뼈다귀':         w('Fragile_Bone_Shard'),
+  '단단한 뼈다귀':         w('Sturdy_Bone_Shard'),
+  '슬라임 응결물':         w('Slime_Condensate'),
+  '슬라임 분비물':         w('Slime_Secretions'),
+  '슬라임 집중물':         w('Slime_Concentrate'),
+  '슬라임 응축액':         w('Slime_Condensate'),
+  '슬라임청':              w('Slime_Secretions'),
+  '슬라임 원액':           w('Slime_Concentrate'),
+  '안개꽃':                w('Fungal_Spores'),
+  '안개꽃 가루':           w('Luminescent_Pollen'),
+  '농축된 안개꽃 분말':    w('Crystalline_Cyst_Dust'),
+  '성인 버드나무 씨앗':    w('Fungal_Spores'),
+  '성숙한 버드나무 씨앗':  w('Luminescent_Pollen'),
+  '완전한 버드나무 씨앗':  w('Crystalline_Cyst_Dust'),
+  '파우더 가루':           w('Divining_Scroll'),
+  '봉인 두루마리':         w('Sealed_Scroll'),
+  '금지된 두루마리':       w('Forbidden_Curse_Scroll'),
+  '재봉사 바늘':           w('Faded_Red_Satin'),
+  '재봉사 실':             w('Trimmed_Red_Silk'),
+  '재봉사 재단기':         w('Rich_Red_Brocade'),
+  // 특성 책
+  '번영의 가르침':         w('Teachings_of_Prosperity'),
+  '번영의 인도':           w('Guide_to_Prosperity'),
+  '번영의 철학':           w('Philosophies_of_Prosperity'),
+  '공평의 가르침':         w('Teachings_of_Justice'),
+  '공평의 인도':           w('Guide_to_Justice'),
+  '공평의 철학':           w('Philosophies_of_Justice'),
+  '덧없음의 가르침':       w('Teachings_of_Transience'),
+  '덧없음의 인도':         w('Guide_to_Transience'),
+  '덧없음의 철학':         w('Philosophies_of_Transience'),
+  '빛의 가르침':           w('Teachings_of_Light'),
+  '빛의 인도':             w('Guide_to_Light'),
+  '빛의 철학':             w('Philosophies_of_Light'),
+  '근면의 가르침':         w('Teachings_of_Diligence'),
+  '근면의 인도':           w('Guide_to_Diligence'),
+  '근면의 철학':           w('Philosophies_of_Diligence'),
+  '저항의 가르침':         w('Teachings_of_Resistance'),
+  '저항의 인도':           w('Guide_to_Resistance'),
+  '저항의 철학':           w('Philosophies_of_Resistance'),
+  '망아의 가르침':         w('Teachings_of_Ballad'),
+  '망아의 인도':           w('Guide_to_Ballad'),
+  '망아의 철학':           w('Philosophies_of_Ballad'),
+  '인내의 가르침':         w('Teachings_of_Ingenuity'),
+  '인내의 인도':           w('Guide_to_Ingenuity'),
+  '인내의 철학':           w('Philosophies_of_Ingenuity'),
+  '순수의 가르침':         w('Teachings_of_Praxis'),
+  '순수의 인도':           w('Guide_to_Praxis'),
+  '순수의 철학':           w('Philosophies_of_Praxis'),
+  '달빛의 가르침':         w('Teachings_of_Light'),
+  '달빛의 인도':           w('Guide_to_Light'),
+  '달빛의 철학':           w('Philosophies_of_Light'),
+  '유랑의 가르침':         w('Teachings_of_Ballad'),
+  '유랑의 인도':           w('Guide_to_Ballad'),
+  '유랑의 철학':           w('Philosophies_of_Ballad'),
+  '시문의 가르침':         w('Teachings_of_Ballad'),
+  '시문의 인도':           w('Guide_to_Ballad'),
+  '시문의 철학':           w('Philosophies_of_Ballad'),
+  // 주간 보스
+  '침식된 불꽃뿔':         w('Desiccated_Shell'),
+  '침식된 비늘깃':         w('Desiccated_Shell'),
+  '침식된 태양':           w('Lightless_Silhouette'),
+  '폭군의 갑옷 파편':      w('Tusk_of_Monoceros_Caeli'),
+  '부유하는 마법진':       w('Light_Guiding_Tetrahedron'),
+  '변치 않는 뿔':          w('Mudra_of_the_Malefic_General'),
+  '검은 영역의 거울':      w('Mirror_of_Mushin'),
+  '진홍 가지':             w('Bloodjade_Branch'),
+  '슬픔의 가면':           w('Puppet_Strings'),
+  '풍룡의 이빨':           w('Dvalin%27s_Claw'),
+  '승격·퀸':              w('Mirror_of_Mushin'),
+  '도토레의 인공 눈동자':  w('Lightless_Eye_of_the_Maelstrom'),
+  '도토레의 결정체':       w('Lightless_Eye_of_the_Maelstrom'),
+  // 공통
+  '지식의 왕관':           w('Crown_of_Insight'),
+};
+
+const IMG = {
+  char: name => CHAR_IMG[name] || null,
+  mat:  name => MAT_IMG[name]  || null,
+  weap: name => null,  // 무기 이미지는 옵션 B에서 추가
+  art:  name => null,  // 성유물 이미지는 옵션 B에서 추가
+};
+
+// ════════════════════════════════════════════════════
+//  CHARACTER DATA
+// ════════════════════════════════════════════════════
+const CHARS = [
+  {
+    id:'에스코피에', elem:'cryo', star:5, weapon:'장병기', region:'폰타인', role:'메인 딜러',
+    desc:'폰타인 출신의 전설적인 요리사이자 크라이오 원소 장병기 캐릭터. 냉동 반응과 얼음 원소를 활용한 독특한 전투 스타일을 가지고 있다.',
+    ascension: {
+      gem: ['서늘한 빙옥 가루','서늘한 빙옥 조각','서늘한 빙옥 덩이','서늘한 빙옥'],
+      gemSource: '얼음 나무 (무상의 얼음) / 합성대',
+      boss: '비밀근원 분사구', bossSource: '비밀근원 기계·통솔기 (수메루)',
+      local: '푸른 수정 소라', localSource: '살라키아 해저 평원 (폰타인)',
+      mob: ['맞물림 톱니바퀴','평톱니바퀴','오토마톤 코어 톱니바퀴'], mobSource: '태엽 장치 (수메루)',
+      mora: 2092530, xp: 419,
+    },
+    talent: {
+      book: ['정의의 가르침','정의의 인도','정의의 철학'], bookDays: '화·금·일',
+      weekly: '침식된 불꽃뿔', weeklySource: '침식된 근원의 불꽃 주인 (나타)', crown: 3,
+    },
+    weapons: [
+      { name:'낙화', stars:5, note:'전용 무기. 빙옥 스택과 시너지 최상' },
+      { name:'파죽', stars:5, note:'공격력 증가 + 스킬 데미지 강화' },
+      { name:'자몽검', stars:5, note:'크리티컬 스탯 확보 용이' },
+    ],
+    artifacts: [
+      { name:'스크리아빈', note:'전용 성유물. 크라이오 보너스 + 얼음 반응 강화' },
+      { name:'광채', note:'대안 세트. 공속 버프 포함' },
+    ],
+    stats: { sand:'공격력% / 원소 숙련', cup:'크라이오 원소 피해 보너스', crown:'치명타율 / 치명타 피해', sub:'치명타율 ≥ 치명타 피해 ≈ 공격력% ≥ 원소 숙련' },
+    talentPriority: ['원소 폭발','원소 스킬','일반 공격'],
+    parties: [
+      { name:'고성능', chars:['에스코피에','종려','베넷','행추'], note:'냉동 유지 + 공격력 극대화' },
+      { name:'범용',   chars:['에스코피에','씨아오','베넷','나히다'], note:'얼음·바람 소용돌이 조합' },
+      { name:'저과금', chars:['에스코피에','카에야','베넷','행추'], note:'4성 위주 냉동 파티' },
+    ],
+    efficiency:'고화력 크라이오 메인 딜러. 전용 무기 있을 때 최상위 성능. 냉동/과부하 반응 팀에 높은 가치.',
+  },
+  {
+    id:'종려', elem:'geo', star:5, weapon:'장병기', region:'리월', role:'서포터 / 쉴더',
+    desc:'리월 전 암신. 원소력으로 강력한 보호막을 제공하는 전 메타 최상위 서포터. 어떤 파티에도 들어갈 수 있는 필수급 캐릭터.',
+    ascension: {
+      gem: ['대지 황수정 가루','대지 황수정 조각','대지 황수정 덩이','대지 황수정'],
+      gemSource: '리치보어 / 합성대',
+      boss: '여상의 혼', bossSource: '리치보어 (리월)',
+      local: '진달래', localSource: '쉬미산 일대 (리월)',
+      mob: ['녹슨 화살촉','뒤틀린 화살촉','독이 묻은 화살촉'], mobSource: '폭렬 슬라임 / 전기 슬라임 (전역)',
+      mora: 2092530, xp: 419,
+    },
+    talent: {
+      book: ['번영의 가르침','번영의 인도','번영의 철학'], bookDays: '수·토·일',
+      weekly: '폭군의 갑옷 파편', weeklySource: '제2대 성자 덩신 (리월)', crown: 3,
+    },
+    weapons: [
+      { name:'파죽', stars:5, note:'방어력 스택 + 쉴드 강화에 최적' },
+      { name:'호마의 지팡이', stars:5, note:'HP 기반 데미지 + 방어력 시너지' },
+      { name:'천암의 창', stars:4, note:'방어력 강화 + 파티 공격력 버프' },
+    ],
+    artifacts: [
+      { name:'단단한 돌', note:'파티 전체 HP 버프 + 쉴드 강화' },
+      { name:'검투사의 피날레', note:'서포터도 충분한 데미지' },
+    ],
+    stats: { sand:'HP%', cup:'지오 원소 피해 보너스', crown:'HP%', sub:'HP% ≥ HP ≥ 치명타율' },
+    talentPriority: ['원소 스킬','원소 폭발','일반 공격'],
+    parties: [
+      { name:'만능 방패', chars:['종려','후','베넷','행추'], note:'종려 쉴드 + 후 증발 파티' },
+      { name:'범용',      chars:['종려','나비아','베넷','행추'], note:'방어 + 나비아 지오 딜' },
+      { name:'저과금',    chars:['종려','카에야','행추','베넷'], note:'얼어붙기 + 종려 쉴드' },
+    ],
+    efficiency:'모든 파티에서 범용성 최상. 단독으로 최강 쉴드 제공. 필수 픽 캐릭터.',
+  },
+  {
+    id:'후', elem:'pyro', star:5, weapon:'장병기', region:'리월', role:'메인 딜러',
+    desc:'왕생당 77대 당주. HP를 소모해 공격력 버프를 얻는 최강 불꽃 딜러. 증발 팀에서 압도적인 딜량을 뽑아낸다.',
+    ascension: {
+      gem: ['염화 아게이트 가루','염화 아게이트 조각','염화 아게이트 덩이','염화 아게이트'],
+      gemSource: '불꽃 새 / 합성대',
+      boss: '차가운 심장', bossSource: '얼음 바람의 지배자 (드래곤스파인)',
+      local: '담경초', localSource: '리월 전역',
+      mob: ['녹슨 화살촉','뒤틀린 화살촉','독이 묻은 화살촉'], mobSource: '표류하는 영혼 (리월)',
+      mora: 2092530, xp: 419,
+    },
+    talent: {
+      book: ['망아의 가르침','망아의 인도','망아의 철학'], bookDays: '월·목·일',
+      weekly: '진홍 가지', weeklySource: '로섹스 (스카르티아)', crown: 3,
+    },
+    weapons: [
+      { name:'호마의 지팡이', stars:5, note:'전용 무기. HP 기반 공격력 + 치명타 피해 최상' },
+      { name:'증인의 창', stars:5, note:'원소 숙련 기반 증발 최적화' },
+      { name:'단용창', stars:4, note:'크리 확률 + HP 기반 시너지' },
+    ],
+    artifacts: [
+      { name:'불꽃의 마녀', note:'증발 반응 최대화 (전통 빌드)' },
+      { name:'이계의 유파', note:'폭발 데미지 최적화' },
+    ],
+    stats: { sand:'HP%', cup:'불꽃 원소 피해 보너스', crown:'치명타율 / 치명타 피해', sub:'치명타 피해 ≥ 치명타율 ≥ HP% ≥ HP' },
+    talentPriority: ['원소 스킬','원소 폭발','일반 공격'],
+    parties: [
+      { name:'증발 최강', chars:['후','행추','베넷','종려'], note:'증발 반응 극대화' },
+      { name:'냉동 증발', chars:['후','행추','카즈하','베넷'], note:'소용돌이 버프 + 증발' },
+      { name:'저과금',   chars:['후','행추','베넷','카에야'], note:'행추 물 지속 + 증발' },
+    ],
+    efficiency:'최상위 불꽃 딜러. 증발 팀에서 압도적. 조작 숙련 시 최강.',
+  },
+  {
+    id:'푸리나', elem:'hydro', star:5, weapon:'단검', region:'폰타인', role:'서포터',
+    desc:'폰타인 수신. 파티 HP 변화로 폭발이 강화되는 현 메타 최상위 서포터. 모든 팀 구성에서 범용성이 극상.',
+    ascension: {
+      gem: ['수류 청금석 가루','수류 청금석 조각','수류 청금석 덩이','수류 청금석'],
+      gemSource: '극락 조개 / 합성대',
+      boss: '가득한 물', bossSource: '수정 비상어 (폰타인)',
+      local: '바다 이슬꽃', localSource: '폰타인 해안',
+      mob: ['쿠즈사군 흉장','엘리트 쿠즈사군 흉장','직속 쿠즈사군 흉장'], mobSource: '쿠즈사군 (이나즈마)',
+      mora: 2092530, xp: 419,
+    },
+    talent: {
+      book: ['공평의 가르침','공평의 인도','공평의 철학'], bookDays: '화·금·일',
+      weekly: '부유하는 마법진', weeklySource: '폰타인 주간 보스', crown: 3,
+    },
+    weapons: [
+      { name:'긴 밤의 소고', stars:5, note:'전용 무기. HP 기반 + 폰타인 특화' },
+      { name:'희극', stars:4, note:'에너지 충전 최상' },
+      { name:'희생의 검', stars:4, note:'스킬 재사용 대기 감소' },
+    ],
+    artifacts: [
+      { name:'황금 극단', note:'폭발 데미지 최대화' },
+      { name:'현무 수의', note:'물 원소 피해 강화 + 힐 시너지' },
+    ],
+    stats: { sand:'HP%', cup:'물 원소 피해 보너스', crown:'치명타율 / 치명타 피해', sub:'HP% ≥ 치명타율 ≥ 치명타 피해 ≥ 에너지 충전 효율' },
+    talentPriority: ['원소 폭발','원소 스킬','일반 공격'],
+    parties: [
+      { name:'국민 파티+',  chars:['푸리나','느비예트','카즈하','베넷'], note:'최고 성능 물 원소 파티' },
+      { name:'범용 물 파티', chars:['푸리나','종려','카즈하','베넷'], note:'쉴드 + 소용돌이 + 폭발' },
+      { name:'저과금',      chars:['푸리나','행추','베넷','카에야'], note:'4성 위주 물 원소' },
+    ],
+    efficiency:'현 메타 최상위 서포터. 모든 팀 구성에서 필수급. 필수 뽑기 대상.',
+  },
+  {
+    id:'라이덴 쇼군', elem:'electro', star:5, weapon:'장병기', region:'이나즈마', role:'메인 딜러 / 배터리',
+    desc:'이나즈마 신. 파티 에너지를 충전하면서 자신도 강력한 번개 딜러로 활약. 배터리+딜러 겸직의 독보적인 포지션.',
+    ascension: {
+      gem: ['번개 자수정 가루','번개 자수정 조각','번개 자수정 덩이','번개 자수정'],
+      gemSource: '천수 / 합성대',
+      boss: '번영하는 태양의 눈', bossSource: '이나즈마 해역 보스',
+      local: '보라색 잣', localSource: '이나즈마 전역',
+      mob: ['쿠즈사군 흉장','엘리트 쿠즈사군 흉장','직속 쿠즈사군 흉장'], mobSource: '쿠즈사군 (이나즈마)',
+      mora: 2092530, xp: 419,
+    },
+    talent: {
+      book: ['빛의 가르침','빛의 인도','빛의 철학'], bookDays: '화·금·일',
+      weekly: '변치 않는 뿔', weeklySource: '마신의 장군 모미지 (이나즈마)', crown: 3,
+    },
+    weapons: [
+      { name:'정토일여', stars:5, note:'전용 무기. 에너지 충전 기반 극대화' },
+      { name:'천공의 창', stars:5, note:'에너지 + 공격력 시너지' },
+      { name:'희극', stars:4, note:'에너지 충전 효율 최상 4성' },
+    ],
+    artifacts: [
+      { name:'절연의 기치', note:'에너지 충전 기반 폭발 최대화' },
+      { name:'번개 같은 분노', note:'번개 반응 강화' },
+    ],
+    stats: { sand:'에너지 충전 효율', cup:'번개 원소 피해 보너스', crown:'치명타율 / 치명타 피해', sub:'에너지 충전 효율 200%까지 ≥ 치명타율 ≥ 치명타 피해' },
+    talentPriority: ['원소 폭발','원소 스킬','일반 공격'],
+    parties: [
+      { name:'국민 파티', chars:['라이덴 쇼군','베넷','카즈하','행추'], note:'에너지 + 소용돌이 + 증발' },
+      { name:'하이퍼 캐리', chars:['라이덴 쇼군','야에 미코','베넷','카즈하'], note:'전기 집중 파티' },
+      { name:'저과금',    chars:['라이덴 쇼군','피슬','베넷','카즈하'], note:'번개·불꽃 과부하' },
+    ],
+    efficiency:'배터리+딜러 겸직 최고. 절연 + 정토일여 시 최상위. 모든 팀에서 에너지 기여.',
+  },
+  {
+    id:'카즈하', elem:'anemo', star:5, weapon:'단검', region:'이나즈마', role:'서포터 / 버퍼',
+    desc:'이나즈마 유랑인. 소용돌이로 적 원소 저항을 감소시키고 파티 원소 피해를 강화하는 현 메타 최상위 서포터.',
+    ascension: {
+      gem: ['취록 비취 가루','취록 비취 조각','취록 비취 덩이','취록 비취'],
+      gemSource: '비구름 새 / 합성대',
+      boss: '고대 귀족 가면', bossSource: '금박 왕 (리월)',
+      local: '바다 배추', localSource: '이나즈마 해안가',
+      mob: ['낡은 뼈다귀','풍화된 뼈다귀','단단한 뼈다귀'], mobSource: '폭렬 슬라임 (전역)',
+      mora: 2092530, xp: 419,
+    },
+    talent: {
+      book: ['덧없음의 가르침','덧없음의 인도','덧없음의 철학'], bookDays: '월·목·일',
+      weekly: '검은 영역의 거울', weeklySource: '심연 사도 (이나즈마)', crown: 3,
+    },
+    weapons: [
+      { name:'이정', stars:5, note:'원소 숙련 최대화. 소용돌이 버프 극대화' },
+      { name:'달빛을 향해 걸어요', stars:4, note:'원소 숙련 기반 최고 4성' },
+    ],
+    artifacts: [
+      { name:'떠돌이 음악가', note:'소용돌이 시 적 원소 저항 40% 감소 (핵심)' },
+      { name:'금박 꿈', note:'원소 숙련 최대화로 버프 증가' },
+    ],
+    stats: { sand:'원소 숙련', cup:'원소 숙련', crown:'원소 숙련', sub:'원소 숙련 최대화 ≥ HP% ≥ 에너지 충전 효율' },
+    talentPriority: ['원소 스킬','원소 폭발','일반 공격'],
+    parties: [
+      { name:'증발 팀', chars:['카즈하','후','행추','베넷'], note:'소용돌이 + 불꽃 저항 감소' },
+      { name:'냉동 팀', chars:['카즈하','에이미야','행추','종려'], note:'얼어붙기 + 소용돌이' },
+      { name:'국제 팀', chars:['카즈하','라이덴 쇼군','베넷','행추'], note:'만능 소용돌이' },
+    ],
+    efficiency:'최상위 서포터. 원소 숙련 기반 버프는 모든 딜러와 시너지. 필수급.',
+  },
+  {
+    id:'나히다', elem:'dendro', star:5, weapon:'법구', region:'수메루', role:'서포터 / 서브 딜러',
+    desc:'수메루 신 초화. 풀 원소 반응(개화, 만개, 격화)의 핵심 캐릭터. 원소 스킬로 광범위한 풀 원소를 지속 부착.',
+    ascension: {
+      gem: ['창성 녹화석 가루','창성 녹화석 조각','창성 녹화석 덩이','창성 녹화석'],
+      gemSource: '거대 약초 새 / 합성대',
+      boss: '짓밟힌 초상', bossSource: '오염된 낙원의 가수 (수메루)',
+      local: '아케소리아 열매', localSource: '수메루 전역',
+      mob: ['안개꽃','안개꽃 가루','농축된 안개꽃 분말'], mobSource: '균사체 (수메루)',
+      mora: 2092530, xp: 419,
+    },
+    talent: {
+      book: ['근면의 가르침','근면의 인도','근면의 철학'], bookDays: '화·금·일',
+      weekly: '달맞이꽃의 꽃가루', weeklySource: '왕자의 목 잘린 말 (수메루)', crown: 3,
+    },
+    weapons: [
+      { name:'기억나는 태고', stars:5, note:'원소 숙련 최대화' },
+      { name:'해묵은 추억', stars:4, note:'원소 숙련 4성 최강' },
+      { name:'희생의 법구', stars:4, note:'스킬 재쿨 감소' },
+    ],
+    artifacts: [
+      { name:'심해 종자', note:'팀 전체 풀 원소 데미지 버프' },
+      { name:'금박 꿈', note:'원소 숙련 + 공격력 강화' },
+    ],
+    stats: { sand:'원소 숙련', cup:'풀 원소 피해 보너스', crown:'치명타율 / 원소 숙련', sub:'원소 숙련 ≥ 치명타율 ≥ 치명타 피해' },
+    talentPriority: ['원소 스킬','원소 폭발','일반 공격'],
+    parties: [
+      { name:'만개 팀', chars:['나히다','라이덴 쇼군','행추','베넷'], note:'전기·물·풀 만개 극대화' },
+      { name:'개화 팀', chars:['나히다','행추','카즈하','베넷'], note:'풀·물 개화 + 소용돌이' },
+      { name:'저과금', chars:['나히다','콜레이','행추','피슬'], note:'4성 위주 만개' },
+    ],
+    efficiency:'풀 원소 핵심. 만개/개화 팀 필수. 돌파 없어도 최상위 서포터 역할.',
+  },
+  {
+    id:'감유', elem:'cryo', star:5, weapon:'활', region:'리월', role:'메인 딜러',
+    desc:'선 기사단 경비대. 충전 공격으로 단일 대상 최고 딜을 뽑아내는 최상위 크라이오 딜러.',
+    ascension: {
+      gem: ['서늘한 빙옥 가루','서늘한 빙옥 조각','서늘한 빙옥 덩이','서늘한 빙옥'],
+      gemSource: '얼음 나무 / 합성대',
+      boss: '차가운 불빛', bossSource: '얼음 바람의 지배자 (드래곤스파인)',
+      local: '전통 밀화', localSource: '리월 전역',
+      mob: ['녹슨 화살촉','뒤틀린 화살촉','독이 묻은 화살촉'], mobSource: '표류하는 영혼 (리월)',
+      mora: 2092530, xp: 419,
+    },
+    talent: {
+      book: ['번영의 가르침','번영의 인도','번영의 철학'], bookDays: '수·토·일',
+      weekly: '차가운 심장', weeklySource: '얼음 바람의 지배자', crown: 3,
+    },
+    weapons: [
+      { name:'아모스의 활', stars:5, note:'충전 공격 극대화' },
+      { name:'서리 칼날', stars:5, note:'치명타율 + 상시 버프' },
+      { name:'흑암의 활', stars:4, note:'치명타 피해 최상 4성' },
+    ],
+    artifacts: [
+      { name:'칸나즈카 통곡', note:'냉동 유지 시 충전 공격 최강' },
+      { name:'불꽃의 마녀', note:'증발 감유 빌드 (베넷 필요)' },
+    ],
+    stats: { sand:'공격력%', cup:'크라이오 원소 피해 보너스', crown:'치명타율 / 치명타 피해', sub:'치명타율 ≥ 치명타 피해 ≥ 공격력%' },
+    talentPriority: ['충전 공격','원소 폭발','원소 스킬'],
+    parties: [
+      { name:'냉동 팀', chars:['감유','행추','베넷','카즈하'], note:'냉동 + 소용돌이 + 증발' },
+      { name:'쌍얼음',  chars:['감유','디오나','베넷','행추'], note:'크라이오 공명 + 냉동' },
+      { name:'저과금', chars:['감유','카에야','행추','베넷'], note:'4성 위주 냉동' },
+    ],
+    efficiency:'충전 공격 기반 단일 최고 딜. 냉동 팀에서 절대적. 조작 단순.',
+  },
+  {
+    id:'나비아', elem:'geo', star:5, weapon:'대검', region:'폰타인', role:'메인 딜러',
+    desc:'폰타인 결정 단 단장. 크리스탈화 파편을 모아 강력한 산탄 스킬을 발동하는 지오 딜러.',
+    ascension: {
+      gem: ['대지 황수정 가루','대지 황수정 조각','대지 황수정 덩이','대지 황수정'],
+      gemSource: '리치보어 / 합성대',
+      boss: '달빛 가시', bossSource: '폰타인 보스',
+      local: '루미두스 종', localSource: '폰타인 전역',
+      mob: ['재봉사 바늘','재봉사 실','재봉사 재단기'], mobSource: '인형 재봉사 (폰타인)',
+      mora: 2092530, xp: 419,
+    },
+    talent: {
+      book: ['공평의 가르침','공평의 인도','공평의 철학'], bookDays: '화·금·일',
+      weekly: '달빛 가시', weeklySource: '폰타인 주간 보스', crown: 3,
+    },
+    weapons: [
+      { name:'명판결', stars:5, note:'전용 무기. 크리스탈화 파편 시너지 최상' },
+      { name:'파도 헤치기', stars:5, note:'공격력 + 크리 딜' },
+      { name:'흑암의 대검', stars:4, note:'치명타 피해 최고 4성' },
+    ],
+    artifacts: [
+      { name:'황금 극단', note:'지오 극대화 + 크리스탈화 버프' },
+      { name:'문명의 빛', note:'나비아 전용. 스킬 데미지 극대화' },
+    ],
+    stats: { sand:'공격력%', cup:'지오 원소 피해 보너스', crown:'치명타율 / 치명타 피해', sub:'치명타율 ≥ 치명타 피해 ≥ 공격력%' },
+    talentPriority: ['원소 스킬','원소 폭발','일반 공격'],
+    parties: [
+      { name:'지오 파티', chars:['나비아','종려','고로','베넷'], note:'지오 공명 + 쉴드 + 딜' },
+      { name:'크리스탈화', chars:['나비아','종려','라이덴 쇼군','베넷'], note:'크리스탈화 파편 극대화' },
+      { name:'저과금',    chars:['나비아','종려','피슬','베넷'], note:'4성 위주 지오' },
+    ],
+    efficiency:'크리스탈화 특화 지오 최강 딜러. 전용 무기와 성유물 시 최강.',
+  },
+  {
+    id:'느비예트', elem:'hydro', star:5, weapon:'법구', region:'폰타인', role:'메인 딜러',
+    desc:'폰타인 심판장. 충전 공격으로 전방을 훑는 독특한 딜링 방식. 단일 최강 물 원소 딜러.',
+    ascension: {
+      gem: ['수류 청금석 가루','수류 청금석 조각','수류 청금석 덩이','수류 청금석'],
+      gemSource: '극락 조개 / 합성대',
+      boss: '달맞이꽃의 꽃가루', bossSource: '이끼 덮인 돌 (수메루)',
+      local: '바다 이슬꽃', localSource: '폰타인 해안',
+      mob: ['재봉사 바늘','재봉사 실','재봉사 재단기'], mobSource: '인형 재봉사 (폰타인)',
+      mora: 2092530, xp: 419,
+    },
+    talent: {
+      book: ['공평의 가르침','공평의 인도','공평의 철학'], bookDays: '화·금·일',
+      weekly: '부유하는 마법진', weeklySource: '폰타인 주간 보스', crown: 3,
+    },
+    weapons: [
+      { name:'긴 밤의 소고', stars:5, note:'전용 무기. HP 기반 최강' },
+      { name:'달빛을 향해 걸어요', stars:4, note:'원소 숙련 기반 4성 최선택' },
+    ],
+    artifacts: [
+      { name:'광채', note:'충전 공격 + 공속 강화' },
+      { name:'마판 오프닝', note:'충전 공격 및 일반 공격 극대화' },
+    ],
+    stats: { sand:'HP%', cup:'물 원소 피해 보너스', crown:'치명타율 / 치명타 피해', sub:'치명타율 ≥ 치명타 피해 ≥ HP%' },
+    talentPriority: ['충전 공격','원소 폭발','원소 스킬'],
+    parties: [
+      { name:'냉동 팀', chars:['느비예트','푸리나','카즈하','라오란'], note:'냉동 유지 + 폭발 버프' },
+      { name:'물 파티', chars:['느비예트','푸리나','카즈하','베넷'], note:'물 집중 + 소용돌이' },
+      { name:'저과금', chars:['느비예트','행추','카즈하','베넷'], note:'4성 위주 물 파티' },
+    ],
+    efficiency:'충전 공격 기반 물 원소 최강 딜러. 마스터 시 최상위.',
+  },
+  {
+    id:'아를레키노', elem:'pyro', star:5, weapon:'장병기', region:'스카르티아', role:'메인 딜러',
+    desc:'파테이논 제4집행관. HP를 소모하며 강화되는 불꽃 창 딜러. 자가 힐과 강력한 일반 공격이 특징.',
+    ascension: {
+      gem: ['염화 아게이트 가루','염화 아게이트 조각','염화 아게이트 덩이','염화 아게이트'],
+      gemSource: '불꽃 새 / 합성대',
+      boss: '멸화의 나비', bossSource: '왕겨의 불꽃 나비 (스카르티아)',
+      local: '영원한 불꽃 연꽃', localSource: '스카르티아 전역',
+      mob: ['재봉사 바늘','재봉사 실','재봉사 재단기'], mobSource: '인형 재봉사 (폰타인)',
+      mora: 2092530, xp: 419,
+    },
+    talent: {
+      book: ['순수의 가르침','순수의 인도','순수의 철학'], bookDays: '화·금·일',
+      weekly: '차가운 불빛', weeklySource: '얼음 바람의 지배자', crown: 3,
+    },
+    weapons: [
+      { name:'화염의 혀', stars:5, note:'전용 무기. HP 기반 최강 시너지' },
+      { name:'호마의 지팡이', stars:5, note:'HP 기반 공격력 버프' },
+      { name:'단용창', stars:4, note:'HP 소모 시 공격력 증가 시너지' },
+    ],
+    artifacts: [
+      { name:'불꽃의 마녀', note:'불꽃 원소 피해 + 증발 강화' },
+      { name:'광채', note:'공속 + 일반 공격 강화' },
+    ],
+    stats: { sand:'HP% / 공격력%', cup:'불꽃 원소 피해 보너스', crown:'치명타율 / 치명타 피해', sub:'치명타율 ≥ 치명타 피해 ≥ HP%' },
+    talentPriority: ['일반 공격','원소 스킬','원소 폭발'],
+    parties: [
+      { name:'증발 팀', chars:['아를레키노','행추','카즈하','베넷'], note:'증발 + 소용돌이 극대화' },
+      { name:'불꽃 팀', chars:['아를레키노','종려','베넷','카즈하'], note:'쉴드 + 불꽃 집중' },
+      { name:'저과금', chars:['아를레키노','행추','베넷','카에야'], note:'행추 물 지속 + 증발' },
+    ],
+    efficiency:'현 메타 불꽃 딜러 최상위. 자가 힐로 생존력 높음. 전용 무기 없어도 강력.',
+  },
+  {
+    id:'씨아오', elem:'anemo', star:5, weapon:'장병기', region:'리월', role:'메인 딜러',
+    desc:'리월 5야叉. 폭발로 변신해 강력한 도약 공격을 퍼붓는 바람 원소 최강 딜러.',
+    ascension: {
+      gem: ['취록 비취 가루','취록 비취 조각','취록 비취 덩이','취록 비취'],
+      gemSource: '비구름 새 / 합성대',
+      boss: '여상의 혼', bossSource: '리치보어 (리월)',
+      local: '전통 밀화', localSource: '리월 전역',
+      mob: ['슬라임 응결물','슬라임 분비물','슬라임 집중물'], mobSource: '슬라임 (전역)',
+      mora: 2092530, xp: 419,
+    },
+    talent: {
+      book: ['번영의 가르침','번영의 인도','번영의 철학'], bookDays: '수·토·일',
+      weekly: '슬픔의 가면', weeklySource: '리월 주간 보스', crown: 3,
+    },
+    weapons: [
+      { name:'자몽검', stars:5, note:'전용 무기. 공중 공격 최강' },
+      { name:'천공의 창', stars:5, note:'안정적 공격력 + 에너지' },
+      { name:'원수의 장창', stars:4, note:'크리 확률 + 클리어 보너스' },
+    ],
+    artifacts: [
+      { name:'용인의 옥', note:'씨아오 전용. 폭발 후 바람 강화' },
+      { name:'검투사의 피날레', note:'일반·충전 공격 강화' },
+    ],
+    stats: { sand:'공격력%', cup:'바람 원소 피해 보너스', crown:'치명타율 / 치명타 피해', sub:'치명타율 ≥ 치명타 피해 ≥ 공격력%' },
+    talentPriority: ['원소 폭발','일반 공격','원소 스킬'],
+    parties: [
+      { name:'씨아오 팀', chars:['씨아오','베넷','종려','파루잔'], note:'쉴드 + 바람 저항 감소 + 힐' },
+      { name:'범용',      chars:['씨아오','베넷','종려','행추'], note:'안정적 서포트' },
+      { name:'저과금',   chars:['씨아오','베넷','디오나','파루잔'], note:'4성 위주 바람' },
+    ],
+    efficiency:'바람 원소 최강 딜러. 수직 공간 + 범위 딜 특화. 숙련 시 매우 강력.',
+  },
+  {
+    id:'야에 미코', elem:'electro', star:5, weapon:'법구', region:'이나즈마', role:'서브 딜러',
+    desc:'이나즈마 사쿠라 신사 신관. 설치형 토리이로 지속적인 번개 피해를 주는 서브 딜러. 만개/격화 팀에서 최강.',
+    ascension: {
+      gem: ['번개 자수정 가루','번개 자수정 조각','번개 자수정 덩이','번개 자수정'],
+      gemSource: '천수 / 합성대',
+      boss: '끝없는 몽상', bossSource: '이나즈마 보스',
+      local: '바다 배추', localSource: '이나즈마 해안가',
+      mob: ['레이선 가면','레이선 뿔','기이한 레이선 뿔','완전한 레이선 뿔'], mobSource: '레이선 (이나즈마)',
+      mora: 2092530, xp: 419,
+    },
+    talent: {
+      book: ['빛의 가르침','빛의 인도','빛의 철학'], bookDays: '화·금·일',
+      weekly: '변치 않는 뿔', weeklySource: '마신의 장군 모미지 (이나즈마)', crown: 3,
+    },
+    weapons: [
+      { name:'정토일여', stars:5, note:'에너지 충전 + 번개 딜' },
+      { name:'송뢰', stars:5, note:'치명타 피해 + 번개 강화' },
+    ],
+    artifacts: [
+      { name:'황금 극단', note:'번개 딜 최대화' },
+      { name:'번개 같은 분노', note:'번개 반응 강화' },
+    ],
+    stats: { sand:'공격력%', cup:'번개 원소 피해 보너스', crown:'치명타율 / 치명타 피해', sub:'치명타율 ≥ 치명타 피해 ≥ 공격력% ≥ 에너지 충전 효율' },
+    talentPriority: ['원소 스킬','원소 폭발','일반 공격'],
+    parties: [
+      { name:'하이퍼 캐리', chars:['야에 미코','라이덴 쇼군','베넷','카즈하'], note:'번개 집중 + 과부하' },
+      { name:'만개 팀',    chars:['야에 미코','나히다','행추','베넷'], note:'전기·풀·물 만개' },
+      { name:'저과금',    chars:['야에 미코','피슬','베넷','행추'], note:'4성 위주 번개' },
+    ],
+    efficiency:'설치 후 자유 운용. 만개/격화 팀 최상위 서브 딜러.',
+  },
+  {
+    id:'알하이탐', elem:'dendro', star:5, weapon:'단검', region:'수메루', role:'메인 딜러',
+    desc:'수메루 현명원 서기장. 격화 반응으로 풀 원소 최강 딜러. 전용 무기 없어도 충분히 강력.',
+    ascension: {
+      gem: ['창성 녹화석 가루','창성 녹화석 조각','창성 녹화석 덩이','창성 녹화석'],
+      gemSource: '거대 약초 새 / 합성대',
+      boss: '달맞이꽃의 꽃가루', bossSource: '이끼 덮인 돌 (수메루)',
+      local: '강철초', localSource: '수메루 사막',
+      mob: ['성인 버드나무 씨앗','성숙한 버드나무 씨앗','완전한 버드나무 씨앗'], mobSource: '숲속 정령 (수메루)',
+      mora: 2092530, xp: 419,
+    },
+    talent: {
+      book: ['인내의 가르침','인내의 인도','인내의 철학'], bookDays: '월·목·일',
+      weekly: '짓밟힌 초상', weeklySource: '오염된 낙원의 가수 (수메루)', crown: 3,
+    },
+    weapons: [
+      { name:'백금의 칼날', stars:5, note:'전용 무기. 원소 숙련 + 격화 극대화' },
+      { name:'단죄의 검', stars:5, note:'치명타 피해 + 강력한 딜' },
+      { name:'밝은 달빛', stars:4, note:'원소 숙련 + 격화 반응 강화' },
+    ],
+    artifacts: [
+      { name:'꿈속의 꽃밭', note:'격화 반응 강화 전용 세트' },
+      { name:'금박 꿈', note:'원소 숙련 + 공격력 강화' },
+    ],
+    stats: { sand:'원소 숙련', cup:'풀 원소 피해 보너스', crown:'치명타율 / 치명타 피해', sub:'원소 숙련 ≥ 치명타율 ≥ 치명타 피해' },
+    talentPriority: ['원소 스킬','원소 폭발','일반 공격'],
+    parties: [
+      { name:'격화 팀', chars:['알하이탐','야에 미코','나히다','베넷'], note:'격화 극대화' },
+      { name:'만개 팀', chars:['알하이탐','나히다','행추','카즈하'], note:'만개 + 소용돌이' },
+      { name:'저과금', chars:['알하이탐','콜레이','피슬','나히다'], note:'4성 위주 격화' },
+    ],
+    efficiency:'현 메타 풀 원소 최강 딜러. 격화 팀 최상위. 전용 무기 없어도 충분히 강력.',
+  },
+  // ── 노드크라이 ──────────────────────────────────────
+  {
+    id:'라우마', elem:'dendro', star:5, weapon:'법구', region:'노드크라이', role:'서포터',
+    desc:'서리달 아이의 달을 읊는 사자. 달개화 반응을 강화하는 풀 원소 서포터. 현 메타 0티어. 네페르와 필수 조합.',
+    ascension: {
+      gem: ['자라나는 비취 가루','자라나는 비취 조각','자라나는 비취 덩이','자라나는 비취'],
+      gemSource: '식탐의 숲룡 산왕 / 무상의 풀 / 합성대',
+      boss: '빛을 품은 날개', bossSource: '달빛 환영 나비 (노드크라이)',
+      local: '달빛 은', localSource: '노드크라이 지역 특산물',
+      mob: ['마모된 표장','정교한 표장','서릿빛 표장'], mobSource: '우인단 특수부대 / 스타더스트 교환',
+      mora: 2092530, xp: 419,
+    },
+    talent: {
+      book: ['달빛의 가르침','달빛의 인도','달빛의 철학'], bookDays: '월·목·일',
+      weekly: '침식된 비늘깃', weeklySource: '침식된 근원의 불꽃 주인 (나타)', crown: 3,
+    },
+    weapons: [
+      { name:'밤을 엮는 거울', stars:5, note:'전용 무기. 달개화 + 원소 마스터리 극대화' },
+      { name:'기억나는 태고', stars:5, note:'원소 마스터리 최대화' },
+      { name:'금빛 류트', stars:4, note:'이벤트 4성. 에너지 충전 +45% + 원소 마스터리 +200. 무과금 최강' },
+    ],
+    artifacts: [
+      { name:'달을 잣는 밤의 노래', note:'노드크라이 전용 신규. 달개화 피해 + 팀 원소 마스터리 최대 120 증가' },
+      { name:'심해 종자', note:'팀 풀 원소 피해 버프 대안' },
+    ],
+    stats: { sand:'원소 마스터리', cup:'원소 마스터리', crown:'원소 마스터리', sub:'원소 마스터리 ≥ 에너지 충전 효율 150%+ ≥ 치명타율' },
+    talentPriority: ['원소 폭발','원소 스킬','일반 공격'],
+    parties: [
+      { name:'달개화 고점', chars:['라우마','네페르','닐루','나히다'], note:'달개화 반응 극대화. 현 메타 최강' },
+      { name:'달개화 범용', chars:['라우마','나히다','코코미','라이덴 쇼군'], note:'풀·물·번개 달개화 하이브리드' },
+      { name:'저과금',     chars:['라우마','콜레이','행추','피슬'], note:'4성 위주 개화 파티' },
+    ],
+    efficiency:'현 메타 0티어 서포터. 달개화 파티 필수 캐릭터. 라우마 유무로 팀 딜 최대 40% 차이.',
+  },
+  {
+    id:'플린스', elem:'electro', star:5, weapon:'장병기', region:'노드크라이', role:'메인 딜러',
+    desc:'노드크라이 사냥꾼. 달감전 반응을 활용하는 번개 원소 메인 딜러. 이네파와 조합 시 최강 성능.',
+    ascension: {
+      gem: ['승리의 자수정 가루','승리의 자수정 조각','승리의 자수정 덩이','승리의 자수정'],
+      gemSource: '천년 묵은 진주 기린 / 번개 나무 / 무상의 뇨전 / 합성대',
+      boss: '달의 힘 오리 금형', bossSource: '강펀치 오리 (노드크라이)',
+      local: '서리촛대꽃', localSource: '종야의 묘지 / 서리달 마을 (노드크라이)',
+      mob: ['훼손된 구동축','강화 구동축','정밀 구동축'], mobSource: '기갑선 / 스타더스트 교환 / 합성대',
+      mora: 2092530, xp: 419,
+    },
+    talent: {
+      book: ['유랑의 가르침','유랑의 인도','유랑의 철학'], bookDays: '수·토·일',
+      weekly: '승격·퀸', weeklySource: '문 앞의 체스 마녀의 시련 (몬드)', crown: 3,
+    },
+    weapons: [
+      { name:'적사지의 주인', stars:5, note:'전용 무기. 달감전 극대화' },
+      { name:'정토일여', stars:5, note:'에너지 충전 + 번개 딜' },
+      { name:'희극', stars:4, note:'에너지 충전 안정화' },
+    ],
+    artifacts: [
+      { name:'경계가 드러난 밤', note:'신규 성유물. 달감전 특화. 2순위 대비 10%+ 차이' },
+      { name:'황금 극단', note:'공격력 2+2 조합 대안' },
+    ],
+    stats: { sand:'공격력%', cup:'번개 원소 피해 보너스', crown:'치명타율 / 치명타 피해', sub:'공격력% ≥ 치명타율 ≥ 치명타 피해 ≥ 에너지 충전 효율' },
+    talentPriority: ['원소 폭발','원소 스킬','일반 공격'],
+    parties: [
+      { name:'달감전 고점', chars:['플린스','이네파','아이노','설'], note:'이네파+플린스 달감전 최강 조합' },
+      { name:'달감전 범용', chars:['플린스','아이노','야란','올로룬'], note:'물·번개 달감전 기본 조합' },
+      { name:'저과금',     chars:['플린스','피슬','행추','베넷'], note:'4성 위주 번개·물 파티' },
+    ],
+    efficiency:'이네파와 함께 사용 시 0.5티어. 단독으로도 준수한 번개 딜러. 달감전 메타에서 필수급.',
+  },
+  {
+    id:'네페르', elem:'dendro', star:5, weapon:'활', region:'노드크라이', role:'메인 딜러',
+    desc:'비밀의 집 여주인. 달개화 메인 딜러. EM 기반 달개화 반응으로 현 메타 0티어. 라우마와 시너지 극상.',
+    ascension: {
+      gem: ['자라나는 비취 가루','자라나는 비취 조각','자라나는 비취 덩이','자라나는 비취'],
+      gemSource: '식탐의 숲룡 산왕 / 무상의 풀 / 합성대',
+      boss: '달빛 경로의 비늘', bossSource: '노드크라이 보스',
+      local: '솔방울 호박', localSource: '노드크라이 지역 특산물',
+      mob: ['마모된 표장','정교한 표장','서릿빛 표장'], mobSource: '우인단 특수부대 / 스타더스트 교환',
+      mora: 2092530, xp: 419,
+    },
+    talent: {
+      book: ['달빛의 가르침','달빛의 인도','달빛의 철학'], bookDays: '월·목·일',
+      weekly: '도토레의 인공 눈동자', weeklySource: '도토레 (노드크라이 주간보스)', crown: 3,
+    },
+    weapons: [
+      { name:'진실의 함', stars:5, note:'전용 무기. EM 기반 달개화 피해 극대화' },
+      { name:'사풍 원서', stars:5, note:'원소 숙련 + 안정적 성능' },
+      { name:'서릿빛 새벽', stars:4, note:'6.1 이벤트 4성. 치명타 피해 + 원소 마스터리' },
+    ],
+    artifacts: [
+      { name:'하늘 경계가 드러난 밤', note:'네페르 최강 성유물. EM +80 + 달개화 피해 22.9% 증가' },
+      { name:'심해 종자', note:'팀 풀 원소 버프 대안' },
+    ],
+    stats: { sand:'원소 마스터리', cup:'원소 마스터리', crown:'원소 마스터리 / 치명타 피해', sub:'원소 마스터리 800+ ≥ 치명타율 60% ≥ 치명타 피해 250% ≥ 에너지 충전 효율 140%' },
+    talentPriority: ['원소 스킬','원소 폭발','일반 공격'],
+    parties: [
+      { name:'달개화 고점',  chars:['네페르','라우마','닐루','나히다'], note:'라우마 유무로 40% 딜 차이. 현 메타 최강' },
+      { name:'달개화 범용',  chars:['네페르','라우마','아이노','행추'], note:'달개화 + 안정적 물 부착' },
+      { name:'라우마 없을 때', chars:['네페르','나히다','닐루','코코미'], note:'닐루 풍요핵 + 나히다 풀 부착' },
+    ],
+    efficiency:'현 메타 0티어 메인 딜러. 마비카·스커크와 함께 최상위권. 라우마 보유 시 압도적.',
+  },
+  {
+    id:'두린', elem:'pyro', star:5, weapon:'단검', region:'노드크라이', role:'메인 딜러',
+    desc:'몬드의 전설 속 용. 증발 반응에 특화된 불꽃 한손검 딜러. 노드크라이 캐릭터들과 시너지.',
+    ascension: {
+      gem: ['불타오르는 마노 가루','불타오르는 마노 조각','불타오르는 마노 덩이','불타오르는 마노'],
+      gemSource: '용암철갑 제왕 / 화염 나무 / 무상의 불 / 합성대',
+      boss: '군용 순환식 달의 힘 코어', bossSource: '초대형 기갑 전함 / 기동전투 요새 (노드크라이)',
+      local: '서리촛대꽃', localSource: '종야의 묘지 / 서리달 마을 (노드크라이)',
+      mob: ['마모된 표장','정교한 표장','서릿빛 표장'], mobSource: '우인단 특수부대 / 스타더스트 교환',
+      mora: 2092530, xp: 419,
+    },
+    talent: {
+      book: ['시문의 가르침','시문의 인도','시문의 철학'], bookDays: '수·토·일',
+      weekly: '침식된 태양', weeklySource: '침식된 근원의 불꽃 주인 (나타)', crown: 3,
+    },
+    weapons: [
+      { name:'유성의 유산', stars:5, note:'전용 무기. 증발 반응 극대화' },
+      { name:'단죄의 검', stars:5, note:'치명타 피해 + 강력한 딜' },
+      { name:'흑암의 칼날', stars:4, note:'치명타 피해 최강 4성' },
+    ],
+    artifacts: [
+      { name:'불꽃의 마녀', note:'증발 반응 최대화' },
+      { name:'황금 극단', note:'불꽃 피해 + 치명타 강화' },
+    ],
+    stats: { sand:'공격력%', cup:'불꽃 원소 피해 보너스', crown:'치명타율 / 치명타 피해', sub:'치명타율 ≥ 치명타 피해 ≥ 공격력%' },
+    talentPriority: ['원소 폭발','원소 스킬','일반 공격'],
+    parties: [
+      { name:'증발 팀', chars:['두린','행추','베넷','카즈하'], note:'증발 + 소용돌이 + 공격력 버프' },
+      { name:'불꽃 파티', chars:['두린','라우마','콜롬비나','베넷'], note:'달개화 + 불꽃 전환 하이브리드' },
+      { name:'저과금', chars:['두린','행추','베넷','카에야'], note:'4성 위주 증발' },
+    ],
+    efficiency:'증발 팀에서 준수한 불꽃 딜러. 노드크라이 캐릭터와 시너지.',
+  },
+  {
+    id:'콜롬비나', elem:'hydro', star:5, weapon:'법구', region:'노드크라이', role:'서포터',
+    desc:'우인단 제1집행관 달의 소녀. 물 원소 안정 부착 + 달 반응 내성 감소. 노드크라이 파티의 푸리나. 4돌파가 성능 돌파.',
+    ascension: {
+      gem: ['순수한 청금석 가루','순수한 청금석 조각','순수한 청금석 덩이','순수한 청금석'],
+      gemSource: '물의 환인간 / 무상의 물 / 합성대',
+      boss: '빛나는 뿔', bossSource: '서리밤 하늘 영주 (노드크라이)',
+      local: '호랑가시나무풀', localSource: '엠블라 기둥 / 암스바르트니르 호수 근처 (노드크라이)',
+      mob: ['슬라임 응축액','슬라임청','슬라임 원액'], mobSource: '슬라임 / 스타더스트 교환 / 합성대',
+      mora: 2092530, xp: 419,
+    },
+    talent: {
+      book: ['달빛의 가르침','달빛의 인도','달빛의 철학'], bookDays: '월·목·일',
+      weekly: '도토레의 결정체', weeklySource: '도토레 (노드크라이 주간보스)', crown: 3,
+    },
+    weapons: [
+      { name:'회색 실', stars:5, note:'전용 무기. 물 부착 + 달 반응 강화 극대화' },
+      { name:'긴 밤의 소고', stars:5, note:'HP 기반 + 폰타인 캐릭터 호환' },
+      { name:'희극', stars:4, note:'에너지 충전 + 원소 폭발 회전' },
+    ],
+    artifacts: [
+      { name:'현무 수의', note:'물 원소 피해 + HP 기반 시너지' },
+      { name:'황금 극단', note:'폭발 데미지 최대화' },
+    ],
+    stats: { sand:'HP%', cup:'물 원소 피해 보너스', crown:'치명타율 / HP%', sub:'HP% ≥ 에너지 충전 효율 ≥ 치명타율 ≥ 치명타 피해' },
+    talentPriority: ['원소 폭발','원소 스킬','일반 공격'],
+    parties: [
+      { name:'달개화 고점', chars:['콜롬비나','네페르','라우마','나히다'], note:'달 반응 내성 감소 + 달개화 극대화' },
+      { name:'달감전 파티', chars:['콜롬비나','플린스','이네파','아이노'], note:'물 부착으로 달감전 안정화' },
+      { name:'범용 물 파티', chars:['콜롬비나','느비예트','카즈하','베넷'], note:'범용 물 원소 + 소용돌이' },
+    ],
+    efficiency:'노드크라이 파티의 핵심 서포터. 단독으로 모든 달 반응 가능. 4돌파 시 성능 폭발. 범용성 높음.',
+  },
+  // ── 4성 ────────────────────────────────────────────
+  {
+    id:'베넷', elem:'pyro', star:4, weapon:'단검', region:'몬드', role:'서포터 / 힐러',
+    desc:'모험가 협회 소속. 불운하지만 파티 전체 공격력 버프와 강력한 힐을 제공하는 메타 최상위 4성 서포터.',
+    ascension: {
+      gem: ['염화 아게이트 가루','염화 아게이트 조각','염화 아게이트 덩이','염화 아게이트'],
+      gemSource: '불꽃 새 / 합성대',
+      boss: '차가운 심장', bossSource: '얼음 바람의 지배자',
+      local: '황금빛 체리', localSource: '몬드 전역',
+      mob: ['파우더 가루','봉인 두루마리','금지된 두루마리'], mobSource: '마법사 (전역)',
+      mora: 2092530, xp: 419,
+    },
+    talent: {
+      book: ['저항의 가르침','저항의 인도','저항의 철학'], bookDays: '화·금·일',
+      weekly: '풍룡의 이빨', weeklySource: '폭풍의 눈 드발린 (몬드)', crown: 3,
+    },
+    weapons: [
+      { name:'페보니우스 검', stars:4, note:'에너지 충전 최상' },
+      { name:'희생의 검', stars:4, note:'스킬 재쿨 감소' },
+    ],
+    artifacts: [
+      { name:'불꽃의 마녀', note:'불꽃 원소 강화 + 에너지' },
+      { name:'단단한 돌', note:'파티 버프 강화' },
+    ],
+    stats: { sand:'에너지 충전 효율', cup:'불꽃 원소 피해 보너스', crown:'치명타율', sub:'에너지 충전 효율 ≥ HP% ≥ 치명타율' },
+    talentPriority: ['원소 폭발','원소 스킬','일반 공격'],
+    parties: [
+      { name:'만능 불꽃', chars:['베넷','후','행추','카즈하'], note:'불꽃 파티 핵심 서포터' },
+      { name:'국민 파티', chars:['베넷','감유','행추','카즈하'], note:'범용 최강 파티' },
+    ],
+    efficiency:'4성 중 최상위. 모든 파티의 필수 서포터. HP 기반 힐 + 공격력 버프 독보적.',
+  },
+  {
+    id:'행추', elem:'hydro', star:4, weapon:'단검', region:'리월', role:'서브 딜러 / 서포터',
+    desc:'페이윤 상회 차남. 원소 폭발로 지속적인 물 원소 부착. 최고의 물 원소 서브 딜러이자 필수급 서포터.',
+    ascension: {
+      gem: ['수류 청금석 가루','수류 청금석 조각','수류 청금석 덩이','수류 청금석'],
+      gemSource: '극락 조개 / 합성대',
+      boss: '차가운 심장', bossSource: '얼음 바람의 지배자',
+      local: '전통 밀화', localSource: '리월 전역',
+      mob: ['재봉사 바늘','재봉사 실','재봉사 재단기'], mobSource: '인형 재봉사 (폰타인)',
+      mora: 2092530, xp: 419,
+    },
+    talent: {
+      book: ['번영의 가르침','번영의 인도','번영의 철학'], bookDays: '수·토·일',
+      weekly: '검은 영역의 거울', weeklySource: '심연 사도', crown: 3,
+    },
+    weapons: [
+      { name:'희극', stars:4, note:'에너지 충전 최상' },
+      { name:'희생의 검', stars:4, note:'스킬 재쿨 감소' },
+    ],
+    artifacts: [
+      { name:'절연의 기치', note:'에너지 충전 기반 폭발 지속' },
+    ],
+    stats: { sand:'에너지 충전 효율', cup:'물 원소 피해 보너스', crown:'치명타율 / 치명타 피해', sub:'에너지 충전 효율 ≥ 치명타율 ≥ 치명타 피해' },
+    talentPriority: ['원소 폭발','원소 스킬','일반 공격'],
+    parties: [
+      { name:'증발 팀', chars:['행추','후','베넷','카즈하'], note:'물 지속 + 증발 최강' },
+      { name:'냉동 팀', chars:['행추','감유','카즈하','베넷'], note:'냉동 + 소용돌이' },
+    ],
+    efficiency:'4성 중 최상위. 물 원소 지속 부착 독보적. 모든 팀에서 필수급.',
+  },
+];
+
+// ════════════════════════════════════════════════════
+//  APP STATE
+// ════════════════════════════════════════════════════
+let curElem = 'all';
+let curSearch = '';
+let curChar = null;
+let curTab = 'ascension';
+
+// ════════════════════════════════════════════════════
+//  ROUTING (hash-based)
+// ════════════════════════════════════════════════════
+function goHome() {
+  history.pushState(null, '', '#/');
+  showListPage();
+}
+
+function goChar(id) {
+  const char = CHARS.find(c => c.id === id);
+  if (!char) return;
+  curChar = char;
+  curTab = 'ascension';
+  history.pushState(null, '', `#/char/${encodeURIComponent(id)}`);
+  showDetailPage(char);
+}
+
+window.addEventListener('popstate', handleRoute);
+window.addEventListener('load', handleRoute);
+
+function handleRoute() {
+  const hash = location.hash;
+  if (hash.startsWith('#/char/')) {
+    const id = decodeURIComponent(hash.replace('#/char/', ''));
+    const char = CHARS.find(c => c.id === id);
+    if (char) { curChar = char; showDetailPage(char); return; }
+  }
+  showListPage();
+}
+
+// ════════════════════════════════════════════════════
+//  LIST PAGE
+// ════════════════════════════════════════════════════
+function showListPage() {
+  document.getElementById('listPage').classList.add('active');
+  document.getElementById('detailPage').classList.remove('active');
+  renderGrid();
+}
+
+function setElemFilter(elem) {
+  curElem = elem;
+  document.querySelectorAll('[data-filter-elem]').forEach(b => {
+    b.classList.toggle('active', b.dataset.filterElem === elem);
+  });
+  renderGrid();
+}
+
+function onSearch(val) {
+  curSearch = val.toLowerCase();
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('charGrid');
+  const noRes = document.getElementById('noResults');
+
+  const filtered = CHARS.filter(c => {
+    const elemOk = curElem === 'all' || c.elem === curElem;
+    const searchOk = !curSearch || c.id.toLowerCase().includes(curSearch);
+    return elemOk && searchOk;
+  });
+
+  if (!filtered.length) {
+    grid.innerHTML = '';
+    noRes.style.display = 'block';
+    return;
+  }
+  noRes.style.display = 'none';
+
+  grid.innerHTML = filtered.map(c => {
+    const el = ELEM[c.elem];
+    return `<div class="char-card" onclick="goChar('${c.id}')">
+      <div class="char-card-img-wrap" style="background:${el.bg}">
+        <img src="${IMG.char(c.id)}" alt="${c.id}"
+          onerror="this.parentElement.innerHTML='<div class=\\'char-card-img-placeholder\\'style=\\'background:${el.bg}\\'>${el.icon}</div>'">
+        <span class="char-card-star">★${c.star}</span>
+        <span class="char-card-elem" style="background:${el.color}22">${el.icon}</span>
+      </div>
+      <div class="char-card-body">
+        <div class="char-card-name">${c.id}</div>
+        <div class="char-card-meta">
+          <span style="width:7px;height:7px;border-radius:50%;background:${el.color};display:inline-block"></span>
+          ${el.label} · ${c.weapon}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ════════════════════════════════════════════════════
+//  DETAIL PAGE
+// ════════════════════════════════════════════════════
+function showDetailPage(char) {
+  document.getElementById('listPage').classList.remove('active');
+  document.getElementById('detailPage').classList.add('active');
+  document.getElementById('breadcrumbName').textContent = char.id;
+
+  const el = ELEM[char.elem];
+
+  // Hero
+  document.getElementById('charHero').innerHTML = `
+    <div class="char-hero-img-col" style="background:${el.bg}">
+      <img src="${IMG.char(char.id)}" alt="${char.id}"
+        onerror="this.parentElement.innerHTML='<div class=\\'char-hero-img-placeholder\\'>${el.icon}</div>'">
+    </div>
+    <div class="char-hero-info">
+      <div class="char-hero-name">${char.id}</div>
+      <div class="char-badges">
+        <span class="badge b-star">★${char.star}성</span>
+        <span class="badge b-elem" style="background:${el.bg};color:${el.color};border-color:${el.color}44">${el.icon} ${el.label}</span>
+        <span class="badge b-weap">${char.weapon}</span>
+        <span class="badge b-role">${char.role}</span>
+        <span class="badge b-region">${char.region}</span>
+      </div>
+      <div class="char-hero-desc">${char.desc}</div>
+    </div>`;
+
+  // Reset tabs
+  document.querySelectorAll('.detail-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === 'ascension'));
+  curTab = 'ascension';
+
+  renderTab(char);
+  window.scrollTo(0, 0);
+}
+
+function switchTab(tab) {
+  curTab = tab;
+  document.querySelectorAll('.detail-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  renderTab(curChar);
+}
+
+function renderTab(char) {
+  const container = document.getElementById('detailContent');
+  switch(curTab) {
+    case 'ascension':  container.innerHTML = renderAscension(char); break;
+    case 'talent':     container.innerHTML = renderTalent(char); break;
+    case 'build':      container.innerHTML = renderBuild(char); break;
+    case 'party':      container.innerHTML = renderParty(char); break;
+    case 'efficiency': container.innerHTML = renderEfficiency(char); break;
+  }
+}
+
+// ── Ascension ──
+function renderAscension(c) {
+  const a = c.ascension;
+  const matItems = (names, label) => `
+    <div style="font-size:11.5px;color:var(--text3);font-weight:600;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em">${label}</div>
+    <div class="mat-grid" style="margin-top:0;margin-bottom:14px">
+      ${names.map(n => matCard(n)).join('')}
+    </div>`;
+
+  return `
+    <div class="section">
+      <div class="section-header"><span class="section-icon">💎</span> 캐릭터 돌파 재료</div>
+      <div class="section-body">
+        <table class="wtable">
+          <tr><th>종류</th><th>재료명</th><th>수급처</th></tr>
+          <tr><td class="c-name">보석</td><td>${a.gem.join(' → ')}</td><td class="c-source">${a.gemSource}</td></tr>
+          <tr><td class="c-name">보스 드롭</td><td>${a.boss}</td><td class="c-source">${a.bossSource}</td></tr>
+          <tr><td class="c-name">지역 특산물</td><td>${a.local}</td><td class="c-source">${a.localSource}</td></tr>
+          <tr><td class="c-name">일반 드롭</td><td>${a.mob.join(', ')}</td><td class="c-source">${a.mobSource}</td></tr>
+          <tr><td class="c-name">모라</td><td colspan="2">${a.mora.toLocaleString()}</td></tr>
+          <tr><td class="c-name">영웅의 경험</td><td colspan="2">${a.xp}개 (Lv1→90 기준)</td></tr>
+        </table>
+        <div style="margin-top:18px">
+          ${matItems(a.gem, '보석 재료')}
+          ${matItems([a.boss, a.local, ...a.mob], '보스 / 특산물 / 일반 드롭')}
+        </div>
+      </div>
+    </div>`;
+}
+
+// ── Talent ──
+function renderTalent(c) {
+  const t = c.talent;
+  return `
+    <div class="section">
+      <div class="section-header"><span class="section-icon">📖</span> 특성 재료</div>
+      <div class="section-body">
+        <table class="wtable">
+          <tr><th>종류</th><th>재료명</th><th>수급처</th></tr>
+          <tr><td class="c-name">특성 책</td><td>${t.book.join(' → ')}</td><td class="c-source">${t.bookDays} (비경)</td></tr>
+          <tr><td class="c-name">주간 보스</td><td>${t.weekly}</td><td class="c-source">${t.weeklySource}</td></tr>
+          <tr><td class="c-name">지식의 왕관</td><td>지식의 왕관 × ${t.crown}</td><td class="c-source">기간 한정 이벤트</td></tr>
+        </table>
+        <div style="margin-top:18px">
+          <div style="font-size:11.5px;color:var(--text3);font-weight:600;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em">특성 책</div>
+          <div class="mat-grid" style="margin-top:0">
+            ${t.book.map(n => matCard(n)).join('')}
+            ${matCard(t.weekly)}
+            ${matCard('지식의 왕관')}
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ── Build ──
+function renderBuild(c) {
+  const s = c.stats;
+  return `
+    <div class="section">
+      <div class="section-header"><span class="section-icon">⚔️</span> 추천 무기</div>
+      <div class="section-body">
+        <table class="wtable">
+          <tr><th>#</th><th>무기명</th><th>등급</th><th>추천 이유</th></tr>
+          ${c.weapons.map((w,i) => `<tr>
+            <td class="c-rank">${i+1}</td>
+            <td class="c-name">${w.name}</td>
+            <td>${'★'.repeat(w.stars)}</td>
+            <td class="c-note">${w.note}</td>
+          </tr>`).join('')}
+        </table>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-header"><span class="section-icon">🛡</span> 추천 성유물</div>
+      <div class="section-body">
+        <table class="wtable">
+          <tr><th>#</th><th>세트명</th><th>추천 이유</th></tr>
+          ${c.artifacts.map((a,i) => `<tr>
+            <td class="c-rank">${i+1}</td>
+            <td class="c-name">${a.name}</td>
+            <td class="c-note">${a.note}</td>
+          </tr>`).join('')}
+        </table>
+        <div style="margin-top:18px">
+          <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:10px">성유물 스탯 우선순위</div>
+          <div class="stat-grid">
+            <div class="stat-row"><div class="stat-key">모래</div><div class="stat-val">${s.sand}</div></div>
+            <div class="stat-row"><div class="stat-key">잔</div><div class="stat-val">${s.cup}</div></div>
+            <div class="stat-row"><div class="stat-key">왕관</div><div class="stat-val">${s.crown}</div></div>
+            <div class="stat-row" style="grid-column:1/-1"><div class="stat-key">부속</div><div class="stat-val">${s.sub}</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-header"><span class="section-icon">📈</span> 특성 육성 우선순위</div>
+      <div class="section-body">
+        <div class="priority-list">
+          ${c.talentPriority.map((t,i) => `<div class="priority-pill">
+            <span class="priority-num">${i+1}</span>
+            <span class="priority-text">${t}</span>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+}
+
+// ── Party ──
+function renderParty(c) {
+  return `
+    <div class="section">
+      <div class="section-header"><span class="section-icon">👥</span> 파티 구성 추천</div>
+      <div class="section-body">
+        <div class="party-grid">
+          ${c.parties.map(p => `<div class="party-card">
+            <div class="party-card-name">${p.name}</div>
+            <div class="party-chars">
+              ${p.chars.map(ch => `<span class="party-char">${ch}</span>`).join('')}
+            </div>
+            <div class="party-note">${p.note}</div>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+}
+
+// ── Efficiency ──
+function renderEfficiency(c) {
+  return `
+    <div class="section">
+      <div class="section-header"><span class="section-icon">⚡</span> 효율 분석</div>
+      <div class="section-body">
+        <div class="eff-box">${c.efficiency}</div>
+      </div>
+    </div>`;
+}
+
+// ── Material card ──
+function matCard(name) {
+  const url = IMG.mat(name);
+  const imgHtml = url
+    ? `<img src="${url}" alt="${name}" onerror="this.outerHTML='<div class=\\'mat-item-fallback\\'>📦</div>'">`
+    : `<div class="mat-item-fallback">📦</div>`;
+  return `<div class="mat-item">${imgHtml}<div class="mat-item-name">${name}</div></div>`;
+}
+
+// ── Init ──
+renderGrid();
+</script>
+</body>
+</html>
